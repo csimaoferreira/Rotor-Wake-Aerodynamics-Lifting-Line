@@ -1,0 +1,300 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>AE4-135 Rotor/Wake Aerodynamics</title>
+
+  <link rel="stylesheet" href="css/reveal.css">
+  <link rel="stylesheet" href="css/theme/tudelft_simple.css" id="theme">
+  <link rel="stylesheet" href="lib/css/zenburn.css">
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_SVG"></script>
+  <!-- <script src="js\MathJax.js?config=TeX-AMS-MML_SVG"></script> -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/84/three.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+  <script src="js\plot3Ddrawings.js" charset="utf-8"></script>
+
+
+  <script src="js/plotly-latest.min.js"></script>
+  <script src="js\math.min.js"></script>
+
+  <!-- <script type="text/javascript" async
+  src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
+</script> -->
+
+
+<script src="js\liftinglinemodel.js"></script>
+<script src="js/plotsupportfunctions.js"></script>
+<script src="js/BEMmodel.js"></script>
+<script src="plots_of_functions\several_plots.js"></script>
+
+
+
+
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.9.1/highlight.min.js"></script> -->
+<script src="plugin\highlight\highlight.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+<script>
+var link = document.createElement( 'link' );
+link.rel = 'stylesheet';
+link.type = 'text/css';
+link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+document.getElementsByTagName( 'head' )[0].appendChild( link );
+</script>
+
+</head>
+
+<body >
+  <div id="tudborder">
+    <img src="images/tud_logo_white.svg" width=80% style="position: absolute; left: 0; right: 0; bottom: 0; margin-left: auto; margin-right: auto;">
+  </div>
+  <div id="presentation", class="reveal">
+    <div class="slides">
+
+      <section>  <h1>Lifting line model</h1>
+        <div style="width: 25%; float: left">
+          <img src="images/annulifinal2.svg" >
+        </div>
+        <div style="width: 74%; float: left">
+          <p>Course Rotor and Wake Aerodynamics</p>
+        </div>
+        <div style="width: 100%; float: left">
+        <p class="bottomcall">
+          Press right arrow to continue.
+        </p>
+      </div>
+
+      </section>
+
+      <section>        <!-- <h2>How to use the arrow buttons?</h2> -->
+        <section><h2>How to use the arrow buttons?</h2>
+
+        <p align="justify">On the bottom right there are four directional arrows. </p>
+        <ul>
+          <li>Press on the right arrow to proceed to the next slide.</li>
+          <li>Press on the left arrow to go back to the previous slide.</li>
+          <li>Press on the down arrow for further detail on a topic.</li>
+          <li>Press on the up arrow to return to the top of a topic.</li>
+        </ul>
+        <p align="justify">At the lower right corner, you can find the slide number (horizontal number. vertical number). </p>
+        <p class="bottomcall">
+          Press bottom arrow to test the vertical slide motion.
+        </p>
+      </section>
+
+
+        <section><h2>Use the up arrow to retun up</h2>
+
+        <p align="justify">Use the side arrows to move horizontally. </p>
+        </section>
+
+
+
+      </section>
+
+
+      <section> <h2>Drawing of mesh</h2>
+        <!-- Div which will hold the Output -->
+        <div id="WebGL-output" style="width: 500px, float:center">
+        </div>
+      </section>
+
+
+      <!-- Javascript code that runs our Three.js examples -->
+      <script type="text/javascript">
+        maketestplot(500, 400)
+      </script>
+
+
+
+      <section> <h2>Learning objectives</h2>
+        <p align="left"> To be able to program a lifting line model for application to an horizontal axis wind turbine... </p>
+        <ul>
+          <li>... in steady, uniform, axial flow.</li>
+          <li>... implementing corrections for heavily loaded streamtubes.</li>
+          <li>... implementing corrections for finite number of blades in a finite tip speed ratio.</li>
+        </ul>
+      </section>
+
+
+      <section> <h2>Nomenclature</h2>
+        <ul>
+          <li>$\alpha$    angle of attack at blade element $\left( \right)$.</li>
+          <li>$\beta$    blade twist angle at blade element $\left( \right)$.</li>
+          <li>$ \rho $ fluid density $\left( kg.m^{-3} \right)$.</li>
+          <li>$\Gamma$    circulation at blade element $\left( m^2 s^{-1} \right)$.</li>
+          <li>$\Phi$    perceived-wind inflow-angle at blade element $\left( \right)$.</li>
+          <li>$ \Omega $ rotor rotational velocity $\left(rad.s^{-1} \right)$.</li>
+          <li>$ a $  axial induction factor $\left( \right)$.  </li>
+          <li>$ a' $  azimuthal induction factor $\left( \right)$.  </li>
+          <li>$ c $ blade element chord $\left( m \right)$.</li>
+          <li>$ C_d $ drag coefficient $\left(  \right)$.</li>
+          <li>$ C_l $ lift coefficient $\left(  \right)$.</li>
+          <li>$ C_T $ thrust coefficient $\left(  \right)$.</li>
+          <li>$ Drag $ drag force per unit span $\left( N/m \right)$.</li>
+          <li>$ Lift $  lift force per unit span $\left( N/m \right)$.</li>
+          <li>$ F_{azim} $  azimuthal/tangential force per unit span $\left( N/m \right)$.</li>
+          <li>$ F_{axial} $  axial force per unit span $\left( N/m \right)$.</li>
+          <li>$ N_{blades} $  number of blades $\left( \right)$.</li>
+          <li>$ V_{axial} = U_{rotor}$ axial velocity perceived by  blade element, axial velocity at rotor $\left( m/s \right).$</li>
+          <li>$ V_{p}$  velocity perceived by  blade element $\left( m/s \right)$.</li>
+          <li>$ V_{tan} $ azimuthal/tangential velocity perceived by  blade element $\left( m/s \right)$.</li>
+        </ul>
+      </section>
+
+
+      <section> <h2>The principle of BEM is to balance loads between streamtube and blade element, at each annulus.</h2>
+        <div style="width: 50%; float:left">
+          <p> BEM segments the blades into blade elements, to calculate 2D loads in each element.</p>
+          <p> The circular region swept by the blade elements at a given radial position defines an annulus.</p>
+          <p> Actuator disk momentum theory is applied at each annulus to determine induction as a function of the loading on the blade segements.</p>
+          <p> BEM uses an iterative approach: </p>
+          <ul>
+            <li>the induction calculated from momentum theory is used to calculate the blade element loads with blade element theory.</li>
+            <li>the blade element loads from blade element theory is use to calculate the induction with momentum theory.</li>
+          </ul>
+          <p> The figure on our right shows the equivalent actuator disk that represents the area swept by the blades; in detail, the annulus swept by the blade elements.</p>
+        </div>
+        <div style="width: 50%; float:left">
+          <img src="images/annulifinal.svg" height="100%">
+        </div>
+
+      </section>
+
+
+
+              <section>
+
+                <script type="text/javascript">
+
+                  var GAMMA =2*Math.PI;
+                  var  XV1 =[ 0, 0, -1000000000 ];
+                  var  XV2 =[ 0, 0, 1000000];
+                  var  XVP =[ 0, 1, 0];
+                  var CORE = 0.00001;
+                  var v3d=velocity_3D_from_vortex_filament(GAMMA,XV1, XV2, XVP,CORE);
+
+                  var s_Array = createArraySequence(0.,Math.PI/50, Math.PI);
+
+                  for (var i = 0; i < s_Array.length; i++) {
+                    s_Array[i]= math.cos(s_Array[i])*(-5);
+                  }
+
+
+                  // s_Array = createArraySequence(0.,1,100);
+
+
+                  var rotor_wake_system = create_straight_wing_geometry(s_Array);
+                  var result =solve_lifting_line_system_direct(rotor_wake_system,[1,0,0.1]);
+
+                </script>
+
+
+
+
+                <h2>Example of BEM solution of bound circulation $\Gamma$. </h2>
+                <div  style="width: 100%; float:left "; >
+                <p style ='text-align: center'>  Scroll the button below to change tip speed ratio. <span id="message_calculate_circulation_BEM1"> Tip speed ratio = 6. </span> </p>
+                <input type="range" oninput="solveplotCirculation(this.value)">
+
+                </div>
+                <div id="chart_calculate_circulation_BEM1" style="width: 600px; height: 400px; float: left"; ><!-- Plotly chart will be drawn inside this DIV --></div>
+
+                <div  style="width: 300px; height:400px;  float: left"; >
+                    <p align="left">    $~~~~C_T$= <span id="message_calculate_circulation_BEM1_CTrotor" > 0 </span> </p>
+                    <p align="left">    $~~~~C_{Protor}$= <span  id="message_calculate_circulation_BEM1_CProtor" > 0 </span> </p>
+                    <p>Suggestion: compare $\Gamma$ and $C_T$. Derive the relation.</p>
+
+                </div>
+
+                <div  style="width: 100%; float:left "; >
+
+                  <p>  Note: The circulation $\Gamma$ is non-dimensioned by $\frac{ U_\infty^2 }{N_{Blades} \pi \Omega}$  </p>
+
+                </div>
+
+                <script>
+
+
+                function solveplotCirculation(val) {
+
+                  var TSR = 4+val/100*4;
+                  document.getElementById("message_calculate_circulation_BEM1").innerHTML = "Tip speed ratio = " +TSR.toFixed(2);
+                  var r_Array = createArraySequence(0.2,0.01,1);
+                  var results = solveBEMmodel(1, r_Array, TSR*0.02 , 50, 3);
+                  var adim = Math.PI/(3*TSR/50);
+
+                  plotGamma(results.r_R, nondim(results.Gamma, adim),  '' , "chart_calculate_circulation_BEM1")
+
+                  var results2 = calculateCT_CProtor_CPflow(results.a,results.aline,results.Fnorm, results.Ftan, 1, r_Array, TSR*0.02 , 50, 3);
+                  document.getElementById("message_calculate_circulation_BEM1_CTrotor").innerHTML =  results2.CTrotor.toFixed(2);
+                  document.getElementById("message_calculate_circulation_BEM1_CProtor").innerHTML =  results2.CProtor.toFixed(4);
+                  // document.getElementById("message_calculate_faxial_ftan_1_CPflow").innerHTML =  results2.CPflow.toFixed(4);
+
+
+
+
+
+                }
+
+                solveplotCirculation(50)
+                </script>
+
+              </section>
+
+
+        </section>
+
+        <section> <h2> Review of tutorial</h2>
+
+          <h3>Learning objectives</h3>
+            <p align="left"> To be able to program a BEM code for application to an horizontal axis wind turbine... </p>
+            <ul>
+              <li>... in steady, uniform, axial flow.</li>
+              <li>... implementing corrections for heavily loaded streamtubes.</li>
+              <li>... implementing corrections for finite number of blades in a finite tip speed ratio.</li>
+            </ul>
+            <p>  </p>
+
+            <h3>Suggestions</h3>
+              <p align="left"> Use the simulation tools to compare the relations between the two terms of induction, loading, circulation, and tip speed ratio. </p>
+              <p align="left"> Derive the relations between the two terms of induction, loading, circulation, and tip speed ratio. </p>
+
+        </section>
+
+      </div>
+    </div>
+
+    <script src="lib/js/head.min.js"></script>
+    <script src="js/reveal.js"></script>
+
+    <script>
+    Reveal.initialize({
+      history: true,
+
+      math: {
+        // mathjax: 'https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML',
+        // config: 'TeX-MML-AM_CHTML'
+        // 'TeX-AMS_HTML-full'
+      },
+
+      dependencies: [
+        // { src: 'plugin/math/math.js', async: true }
+        // ,
+        {  src: 'plugin/mathsvg/math.js', async: true},
+        // { src: '/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+      ]
+    });
+
+    // Shows the slide number using default formatting
+    Reveal.configure({ slideNumber: true });
+    // Slide number formatting can be configured using these variables:
+    //  "h.v":  horizontal . vertical slide number (default)
+    //  "h/v":  horizontal / vertical slide number
+    //    "c":  flattened slide number
+    //  "c/t":  flattened slide number / total slides
+    </script>
+
+  </body>
+  </html>
