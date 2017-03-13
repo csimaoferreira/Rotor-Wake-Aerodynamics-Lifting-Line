@@ -1,0 +1,421 @@
+.game-holder {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	background: linear-gradient(#e4e0ba, #f7d9aa);*/
+}
+
+.game_menu_operdesign {
+	position: absolute;
+	top: 10%;
+	right: 1%;
+	width: 18%;
+	text-align: left;
+}
+
+
+.start_menu_style{
+	position: absolute;
+	top: 25%;
+	text-align: center;
+	width: 50%;
+	right:25%;
+}
+
+.button_game_menu{
+	position: absolute;
+		display: block;
+  box-sizing: border-box;
+  margin: 0 auto;
+  padding: 8px;
+	font-family: 'Poiret One';
+	color: #d6483b;
+  /*width: 40%;
+	right: 1%;
+	top: 1%;*/
+  /*max-width: 20%;*/
+
+  background: none;
+  border-radius: 0px;
+  /*color: white;*/
+  text-align: center;
+  /*text-decoration: none;*/
+  letter-spacing: 1px;
+  transition: all 0.3s ease-out;
+	font-size: 1.0em;
+}
+
+
+.mainmenucontainer {
+	position: absolute;
+	overflow: hidden;
+	width: 100%;
+	height: 100%;
+}
+
+.world {
+	position: absolute;
+	overflow: hidden;
+	width: 100%;
+	height: 100%;
+	display: none;
+}
+
+.tutorialframe {
+	position: absolute;
+	overflow: hidden;
+	/*width: 96%;
+	height: 96%;
+	top: 2%;
+	right: 2%;*/
+	width: 100%;
+	height: 100%;
+	top: 0%;
+	right: 0%;
+  background: #267;
+	display: none;
+	font-size: 1.0em;
+}
+
+.tutorialframecanvas {
+	position: absolute;
+	overflow: hidden;
+	width: 100%;
+	height: 90%;
+	top: 9%;
+	right: 0%;
+	background: white;
+	font-size: 1.0em;
+}
+
+
+.button_tutorial{
+position: absolute;
+	display: block;
+box-sizing: border-box;
+margin: 0 auto;
+padding: 8px;
+width: 80%;
+right: 1%;
+top: 1%;
+max-width: 30%;
+
+background: #267;
+border-radius: 0px;
+color: white;
+text-align: left;
+text-decoration: none;
+letter-spacing: 1px;
+transition: all 0.3s ease-out;
+font-size: 1.0em;
+};
+
+
+.button_menu_sandbox {
+	position: absolute;
+		display: block;
+  box-sizing: border-box;
+  margin: 0 auto;
+  padding: 8px;
+  width: 80%;
+	right: 1%;
+	top: 1%;
+  max-width: 20%;
+
+  background: #267;
+  border-radius: 0px;
+  color: white;
+  text-align: left;
+  text-decoration: none;
+  letter-spacing: 1px;
+  transition: all 0.3s ease-out;
+	font-size: 1.0em;
+}
+
+.sandboxcanvas {
+	position: absolute;
+	overflow: hidden;
+	top: 20%;
+	right: 3%;
+	width: 37%;
+	height: 67%;
+	/*top: 0%;
+	right: 0%;*/
+	/*width: 100%;
+	height: 100%;*/
+	/*width: 100%;
+	height: 100%;*/
+	background: #267;
+  border: 1px solid white;*/
+}
+
+
+.game_menu_sandbox{
+	position: absolute;
+	top: 5%;
+	right: 1%;
+	width: 18%;
+	text-align: left;
+}
+
+
+
+.blueprint_sandbox {
+	position: absolute;
+	overflow: hidden;
+	top: 5% ; // 8vh;
+	left: 5%;
+	width: 90%;
+	height: 90%;
+	background-color:#267;
+  border: 15px solid #267;
+	background-image: linear-gradient(rgba(255,255,255,.3) 0.75px, transparent 0.75px),
+    linear-gradient(90deg, rgba(255,255,255,.3) 0.75px, transparent 0.75px),
+    linear-gradient(rgba(255,255,255,.2) 0.75px, transparent 0.75px),
+    linear-gradient(90deg, rgba(255,255,255,.2) 0.75px, transparent 0.75px);
+		background-size:50px 50px, 50px 50px, 10px 10px, 10px 10px;
+  background-position:-2px -2px, -2px -2px, -1px -1px, -1px -1px;
+	display: none;
+}
+
+
+.sandboxdesignspace {
+	position: absolute;
+	overflow: hidden;
+	top: 20%;
+	left: 10%;
+	width: 37%;
+	height: 67%;
+	color: white;
+	text-align: left;
+	text-decoration: none;
+	letter-spacing: 1px;
+	transition: all 0.3s ease-out;
+	font-size: 1.1em;
+	background: #267;
+  border: 1px solid white;*/
+}
+
+
+.blueprint_dropdown{
+	background-color: #267;
+	/*background: none;*/
+	border : none;
+	color: white;
+	text-align: left;
+	text-decoration: none;
+	letter-spacing: 1px;
+	transition: all 0.3s ease-out;
+	font-size: 1.0em;
+	left: 2%;
+	top: 2%;
+	width: 96%;
+	/*height: 10%;*/
+}
+
+.button_menu_sandbox {
+	display: block;
+  box-sizing: border-box;
+  margin: 0 auto;
+  padding: 8px;
+  width: 80%;
+  max-width: 200px;
+
+  background: #267;
+  border-radius: 0px;
+  color: white;
+  text-align: left;
+  text-decoration: none;
+  letter-spacing: 1px;
+  transition: all 0.3s ease-out;
+	font-size: 1.0em;
+}
+
+
+
+.button_game_menu_operdesign {
+	display: block;
+  box-sizing: border-box;
+  margin: 0 auto;
+  padding: 8px;
+  width: 80%;
+  max-width: 200px;
+  background: #fff; /* fallback color for old browsers */
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 0px;
+  color: #68c3c0;
+  text-align: left;
+  text-decoration: none;
+  letter-spacing: 1px;
+  transition: all 0.3s ease-out;
+	font-size: 1.0em;
+}
+
+
+.header {
+	position: absolute;
+	top: 8% ; // 8vh;
+	left: 0;
+	width: 100%;
+	text-align: center;
+	pointer-events: none;
+}
+
+.header h1 {
+  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+  font-weight: 0.5em;
+  /*font-family: 'Playfair Display'; */
+  font-family: 'Poiret One';
+	font-size: 3.5em;
+	line-height: 1;
+	margin: 0;
+	letter-spacing: -0.025em;
+	color: #68c3c0 ;
+}
+
+.header h1 span {
+	font-size: 0.2em;
+	font-style: italic;
+	display: block;
+	margin: 0 0 -1.5em -6em;
+	letter-spacing: 0px;
+}
+
+.header h2 {
+	font-size: 0.585em;
+	margin: 0.55em 0.15em;
+	white-space: nowrap;
+	text-indent: 1em;
+	letter-spacing: 1em;
+	text-transform: uppercase;
+	color: #d6483b;
+}
+
+.message {
+	font-weight: bold;
+	position: absolute;
+	left: 0;
+	width: 100%;
+	text-align: center;
+	text-transform: uppercase;
+	pointer-events: none;
+}
+
+.message--replay {
+	font-size: 1.25vw;
+	bottom: 40vh;
+	display: none;
+	text-indent: 0.5em;
+	letter-spacing: 0.5em;
+	color: #d1b790;
+}
+
+.message--instructions {
+	font-family: 'Poiret One';
+	font-size: 0.85em;
+	bottom: 8vh;
+	letter-spacing: 0.2em;
+	left: 20%;
+	width: 60%;
+	color: #68c3c0;
+}
+
+.message--instructions span {
+	display: block;
+	color: #d6483b;
+	white-space: nowrap;
+}
+
+
+
+/*////*/
+
+
+
+.score {
+	position: absolute;
+	overflow: hidden;
+	width: 100%;
+	height: 100%;
+	background: none;
+	background-color: none;
+	/*width: 100%;*/
+	margin: 2em 0 0;
+	text-align: center;
+	white-space: nowrap;
+}
+
+.score__content {
+	background: none;
+	position: relative;
+	display: inline-block;
+	padding: 0 1em;
+	vertical-align: top;
+}
+
+.score__content:nth-child(2) {
+	background: none;
+	/*border-right: 1px solid #d1b790;*/
+	/*border-left: 1px solid #d1b790;*/
+}
+
+.score__label {
+	font-size: 9px;
+	position: relative;
+	margin: 0 0 0.5em 0;
+	text-align: center;
+	letter-spacing: 3px;
+	text-transform: uppercase;
+	background: none;
+	color: #d6483b;
+}
+
+.score__value {
+	font-family: 'Playfair Display';
+	font-weight: bold;
+	color: #68c3c0;
+}
+
+.score__value--level {
+	font-size: 26px;
+}
+
+.score__value--power {
+	font-size: 30px;
+}
+
+.level-circle {
+	position: absolute;
+	left: 50%;
+	width: 46px;
+	margin: -37px 0 0 -23px;
+	-webkit-transform: rotate(-90deg);
+	transform: rotate(-90deg);
+}
+
+.score__value--publicacceptance {
+	position: relative;
+	width: 100%;
+	height: 8px;
+	left:0%;
+	margin-top: 20px;
+	border-radius: 3px;
+	/*background-color: #68c3c0;*/
+}
+
+/*.acceptance-bar {
+	position: absolute;
+	top: 0;
+	right: 50px;
+	/*width: 100%;*/
+	/*bottom: 0;*/
+	/*left: 0;*/
+	/*margin: 2px;*/
+	/*background-color: #d6483b;*/
+	/*-webkit-animation-name: none;
+	animation-name: none;*/
+	/*-webkit-animation-duration: 150ms;
+	animation-duration: 150ms;
+	-webkit-animation-iteration-count: infinite;
+	animation-iteration-count: infinite;*/
+}
