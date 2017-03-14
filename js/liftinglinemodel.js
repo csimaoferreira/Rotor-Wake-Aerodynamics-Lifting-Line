@@ -72,9 +72,9 @@ for (var i = 0; i < span_array.length-1; i++) {
   temp1= {x1:0 , y1:span_array[i+1], z1: 0, x2:geodef[0]*Math.sin(-1*angle) , y2:span_array[i+1], z2:-1*geodef[0]*Math.cos(angle), Gamma: 0  }   ;
   filaments.push(temp1);
   for (var j = 0; j < theta_array.length-1; j++) {
-    xt = filaments[filaments.length-1].x1;
-    yt = filaments[filaments.length-1].y1;
-    zt = filaments[filaments.length-1].z1;
+    xt = filaments[filaments.length-1].x2;
+    yt = filaments[filaments.length-1].y2;
+    zt = filaments[filaments.length-1].z2;
     dy = (Math.cos(-theta_array[j+1])-Math.cos(-theta_array[j])) * span_array[i+1];
     dz = (Math.sin(-theta_array[j+1])-Math.sin(-theta_array[j])) * span_array[i+1];
     dx = (theta_array[j+1])-(theta_array[j])/tipspeedratio*radius;
