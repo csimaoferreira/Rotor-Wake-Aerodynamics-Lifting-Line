@@ -64,7 +64,7 @@ for (var i = 0; i < span_array.length-1; i++) {
     dx = (theta_array[j+1])-(theta_array[j])/tipspeedratio*radius;
     temp1= {x1: xt+dx, y1: yt+dy, z1: zt+dz, x2: xt , y2:yt, z2:zt, Gamma: 0  }   ;
     filaments.push(temp1);
-  };
+  }; 
 
   // create trailing filaments, at x2 of bound filament
   geodef = geoBlade(span_array[i+1]/radius);

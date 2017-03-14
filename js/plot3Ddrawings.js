@@ -108,7 +108,7 @@ function createWakeMesh() {
   //  var line = new THREE.Line( geometry, material );
   //  lineall.add(line);
 
-
+ 
    var geometry1 = new THREE.Geometry();
   //  for (var  j= 1; j < 3; j++) {
       for (var  j= 1; j < 1+nelements; j++) {
