@@ -35,56 +35,95 @@ function geoBlade(r_R) {
 };
 
 
-function create_rotor_geometry(span_array, radius, tipspeedratio, Uinf, theta_array) {
-// create rotor eometry and rotor-wake circulation system
-var filaments = [];
-var ring = [];
-var controlpoints = [];
-var geodef;
-var r; var angle; var dx; var dz; var dy; var dtheta; var xt; var yt; var zt;
-for (var i = 0; i < span_array.length-1; i++) {
-  r = (span_array[i]+span_array[i+1])/2;
-  geodef = geoBlade(r/radius);
-  angle = geodef[1]*Math.PI/180;
-  controlpoints.push( {coordinates: [ 0 ,  r  , 0 ] , chord: geodef[0], normal: [ Math.cos(angle),  0, -1*Math.sin(angle)] , tangential: [-1*Math.sin(angle), 0, -1*Math.cos(angle)]   } );
-  // define bound vortex filament
-  temp1= {x1:0 , y1:span_array[i], z1:0, x2:0 , y2:span_array[i+1], z2:0, Gamma: 0  }   ;
-  filaments.push(temp1);
-  // create trailing filaments, at x1 of bound filament
-  geodef = geoBlade(span_array[i]/radius);
-  angle = geodef[1]*Math.PI/180;
-  temp1= {x1: geodef[0]*Math.sin(-1*angle), y1:span_array[i], z1: -1*geodef[0]*Math.cos(angle), x2:0 , y2:span_array[i], z2:0, Gamma: 0  }   ;
-  filaments.push(temp1);
-  for (var j = 0; j < theta_array.length-1; j++) {
-    xt = filaments[filaments.length-1].x1;
-    yt = filaments[filaments.length-1].y1;
-    zt = filaments[filaments.length-1].z1;
-    dy = (Math.cos(-theta_array[j+1])-Math.cos(-theta_array[j])) * span_array[i];
-    dz = (Math.sin(-theta_array[j+1])-Math.sin(-theta_array[j])) * span_array[i];
-    dx = (theta_array[j+1])-(theta_array[j])/tipspeedratio*radius;
-    temp1= {x1: xt+dx, y1: yt+dy, z1: zt+dz, x2: xt , y2:yt, z2:zt, Gamma: 0  }   ;
-    filaments.push(temp1);
-  };  
+function create_rotor_geometry(span_array, radius, tipspeedratio, Uinf, theta_array, nblades) {
+  // create rotor eometry and rotor-wake circulation system
+  var filaments = [];
+  var ring = [];
+  var controlpoints = [];
+  var geodef;
+  var r; var angle; var dx; var dz; var dy; var dtheta; var xt; var yt; var zt;
+  var temp1; var temp2;
 
-  // create trailing filaments, at x2 of bound filament
-  geodef = geoBlade(span_array[i+1]/radius);
-  angle = geodef[1]*Math.PI/180;
-  temp1= {x1:0 , y1:span_array[i+1], z1: 0, x2:geodef[0]*Math.sin(-1*angle) , y2:span_array[i+1], z2:-1*geodef[0]*Math.cos(angle), Gamma: 0  }   ;
-  filaments.push(temp1);
-  for (var j = 0; j < theta_array.length-1; j++) {
-    xt = filaments[filaments.length-1].x2;
-    yt = filaments[filaments.length-1].y2;
-    zt = filaments[filaments.length-1].z2;
-    dy = (Math.cos(-theta_array[j+1])-Math.cos(-theta_array[j])) * span_array[i+1];
-    dz = (Math.sin(-theta_array[j+1])-Math.sin(-theta_array[j])) * span_array[i+1];
-    dx = (theta_array[j+1])-(theta_array[j])/tipspeedratio*radius;
-    temp1= {x1: xt, y1: yt, z1: zt, x2: xt+dx , y2:yt+dy, z2:zt+dz, Gamma: 0  }   ;
-    filaments.push(temp1);
+  for (var krot = 0; krot < nblades; krot++) {
+
+    var angle_rotation = 2*Math.PI/nblades*krot;
+    var cosrot = Math.cos(angle_rotation);
+    var sinrot = Math.sin(angle_rotation);
+
+    for (var i = 0; i < span_array.length-1; i++) {
+      r = (span_array[i]+span_array[i+1])/2;
+      geodef = geoBlade(r/radius);
+      angle = geodef[1]*Math.PI/180;
+      // define controlpoints
+      temp1 = {coordinates: [ 0 ,  r  , 0 ] , chord: geodef[0], normal: [ Math.cos(angle),  0, -1*Math.sin(angle)] , tangential: [-1*Math.sin(angle), 0, -1*Math.cos(angle)]   };
+      // rotate blade to position
+      temp1.coordinates = [ 0 ,  temp1.coordinates[1]*cosrot -  temp1.coordinates[2]*sinrot , temp1.coordinates[1]*sinrot +  temp1.coordinates[2]*cosrot ];
+      temp1.normal = [ 0 ,  temp1.normal[1]*cosrot -  temp1.normal[2]*sinrot , temp1.normal[1]*sinrot +  temp1.normal[2]*cosrot ];
+      temp1.tangential = [ 0 ,  temp1.tangential[1]*cosrot -  temp1.tangential[2]*sinrot , temp1.tangential[1]*sinrot +  temp1.tangential[2]*cosrot ];
+
+      controlpoints.push( temp1 );
+      // define bound vortex filament
+      temp1= {x1:0 , y1:span_array[i], z1:0, x2:0 , y2:span_array[i+1], z2:0, Gamma: 0  }   ;
+      // rotate filament to position
+
+      filaments.push(temp1);
+      // create trailing filaments, at x1 of bound filament
+      geodef = geoBlade(span_array[i]/radius);
+      angle = geodef[1]*Math.PI/180;
+      temp1= {x1: geodef[0]*Math.sin(-1*angle), y1:span_array[i], z1: -1*geodef[0]*Math.cos(angle), x2:0 , y2:span_array[i], z2:0, Gamma: 0  }   ;
+      filaments.push(temp1);
+      for (var j = 0; j < theta_array.length-1; j++) {
+        xt = filaments[filaments.length-1].x1;
+        yt = filaments[filaments.length-1].y1;
+        zt = filaments[filaments.length-1].z1;
+        dy = (Math.cos(-theta_array[j+1])-Math.cos(-theta_array[j])) * span_array[i];
+        dz = (Math.sin(-theta_array[j+1])-Math.sin(-theta_array[j])) * span_array[i];
+        dx = (theta_array[j+1]-theta_array[j])/tipspeedratio*radius;
+
+        temp1= {x1: xt+dx, y1: yt+dy, z1: zt+dz, x2: xt , y2:yt, z2:zt, Gamma: 0  }   ;
+        // rotate filament to position
+
+        filaments.push(temp1);
+      };
+
+      // create trailing filaments, at x2 of bound filament
+      geodef = geoBlade(span_array[i+1]/radius);
+      angle = geodef[1]*Math.PI/180;
+      temp1= {x1:0 , y1:span_array[i+1], z1: 0, x2:geodef[0]*Math.sin(-1*angle) , y2:span_array[i+1], z2:-1*geodef[0]*Math.cos(angle), Gamma: 0  }   ;
+      filaments.push(temp1);
+      for (var j = 0; j < theta_array.length-1; j++) {
+        xt = filaments[filaments.length-1].x2;
+        yt = filaments[filaments.length-1].y2;
+        zt = filaments[filaments.length-1].z2;
+        dy = (Math.cos(-theta_array[j+1])-Math.cos(-theta_array[j])) * span_array[i+1];
+        dz = (Math.sin(-theta_array[j+1])-Math.sin(-theta_array[j])) * span_array[i+1];
+        dx = (theta_array[j+1]-theta_array[j])/tipspeedratio*radius;
+
+        temp1= {x1: xt, y1: yt, z1: zt, x2: xt+dx , y2:yt+dy, z2:zt+dz, Gamma: 0  }   ;
+        // rotate filament to position
+
+        filaments.push(temp1);
+      };
+
+
+      for (var ifil = 0; ifil < filaments.length; ifil++) {
+        temp1=filaments[ifil];
+        temp2 = [ temp1.y1*cosrot -  temp1.z1*sinrot , temp1.y1*sinrot +  temp1.z1*cosrot , temp1.y2*cosrot -  temp1.z2*sinrot , temp1.y2*sinrot +  temp1.z2*cosrot ];
+        temp1.y1 = temp2[0];
+        temp1.z1 = temp2[1];
+        temp1.y2 = temp2[2];
+        temp1.z2 = temp2[3];
+        filaments[ifil] = temp1;
+      }
+
+
+
+
+      ring.push({filaments: filaments});
+      filaments = [];
+    };
+
   };
-
-  ring.push({filaments: filaments});
-  filaments = [];
-};
   return({controlpoints: controlpoints ,  rings: ring});
 };
 
