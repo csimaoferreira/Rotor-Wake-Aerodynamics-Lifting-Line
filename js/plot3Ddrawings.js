@@ -115,7 +115,7 @@ function createWakeMesh() {
    });
 
   //  bound vortices
-   var geometry = new THREE.Geometry();
+   var geometry = new THREE.Geometry();  
    geometry.vertices.push(
    	new THREE.Vector3( filaments[0].x1, filaments[0].y1, filaments[0].z1 ),
     new THREE.Vector3( filaments[0].x2, filaments[0].y2, filaments[0].z2 )

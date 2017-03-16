@@ -199,7 +199,7 @@ function solve_lifting_line_system_matrix_approach(rotor_wake_system,wind, Omega
         // rings[jring] = update_Gamma_single_ring(rings[jring],1,1);
         // velocity_induced = velocity_induced_single_ring(rings[jring], controlpoints[icp].coordinates);
         u = u + MatrixU[icp][jring]*GammaNew[jring];
-        //
+        //  
         // console.log("matrix term " + MatrixU[icp][jring]);
         // console.log("gamma term " + GammaNew[jring]);
         //
