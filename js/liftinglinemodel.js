@@ -140,10 +140,12 @@ function solve_lifting_line_system_matrix_approach(rotor_wake_system,wind, Omega
   var w = 0;
   var alpha;
   var GammaNew=[];
-  var GammaOld=[];
+  var Gamma=[];
   for (var i = 0; i < controlpoints.length; i++) {
     GammaNew.push(0);
   };
+
+  // console.log("gam1 is " + GammaNew);
   var vel1; var vmag; var vn ;
   var cl;
   var vtan; var vnorm; var vall; var vrot;
@@ -151,9 +153,10 @@ function solve_lifting_line_system_matrix_approach(rotor_wake_system,wind, Omega
   var MatrixU = [];
   var MatrixV = [];
   var MatrixW = [];
-  var Niterations =1;
+  var Niterations =1200;
   var errorlimit = 0.001;
-  var error; var refererror;
+  var error = 1.0; var refererror;
+  var ConvWeight =0.1;
 
   // initalize and calculate matrix
   for (var icp= 0; icp < controlpoints.length; icp++) {
@@ -166,47 +169,27 @@ function solve_lifting_line_system_matrix_approach(rotor_wake_system,wind, Omega
       up.push(velocity_induced[0]*1);
       vp.push(velocity_induced[1]*1);
       wp.push(velocity_induced[2]*1);
-      // console.log(u);
+      // console.log(wp);
       velocity_induced =[];
     };
       MatrixU.push(up);
       MatrixV.push(vp);
       MatrixW.push(wp);
+      up =[]; vp =[]; wp =[];
   };
 
-    // console.log(MatrixU);
-    // console.log("gamma " +GammaNew[jring]);
-
-  // for (var irig = 0; irig < rings.length; irig++) {
-  //   rings[irig] = update_Gamma_single_ring(rings[irig],0,1);
-  // };
-
   for (var  kiter = 0; kiter < Niterations; kiter++) {
-
-    GammaOld=[];
+    Gamma=[];
     for (var ig = 0; ig < GammaNew.length; ig++) {
-      GammaOld.push(GammaNew[ig]);
+      Gamma.push(GammaNew[ig]);
     }
-    // GammaOld = GammaNew;
-
-    // for (var irig = 0; irig < rings.length; irig++) {
-    //   // rings[irig] = update_Gamma_single_ring(rings[irig],GammaNew[irig],0.1);
-    // };
-
     for (var icp= 0; icp < controlpoints.length; icp++) {
       u=0; v=0; w=0;
       for (var jring = 0; jring < rings.length; jring++) {
-        // rings[jring] = update_Gamma_single_ring(rings[jring],1,1);
-        // velocity_induced = velocity_induced_single_ring(rings[jring], controlpoints[icp].coordinates);
-        u = u + MatrixU[icp][jring]*GammaNew[jring];
-        //  
-        // console.log("matrix term " + MatrixU[icp][jring]);
-        // console.log("gamma term " + GammaNew[jring]);
-        //
-        v= v + MatrixV[icp][jring]*GammaNew[jring];
-        w= w + MatrixW[icp][jring]*GammaNew[jring];
+        u = u + MatrixU[icp][jring]*Gamma[jring];
+        v= v + MatrixV[icp][jring]*Gamma[jring];
+        w= w + MatrixW[icp][jring]*Gamma[jring];
       };
-      console.log("w " + w);
       vrot = math.cross([-Omega, 0 , 0]  , controlpoints[icp].coordinates );
       vel1 = [wind[0]+ u + vrot[0], wind[1]+ v + vrot[1] , wind[2]+ w + vrot[2]];
       vtan = math.dot(controlpoints[icp].tangential , vel1);
@@ -215,153 +198,53 @@ function solve_lifting_line_system_matrix_approach(rotor_wake_system,wind, Omega
       alpha = Math.atan(vnorm/vtan);
       cl =2*Math.PI*Math.sin(alpha);
       GammaNew[icp] = cl*0.5*vmag*controlpoints[icp].chord;
-
-      console.log("wind " + wind);
-      // console.log("GN" + GammaNew);
-      // console.log("GO" + GammaOld);
-      // console.log('results');
-      // console.log('icp ' + icp);
-
-      console.log("3rd compon " + (wind[2]+ w + vrot[2]));
-      console.log("3rd compon 1 " + (wind[2]));
-      console.log("3rd compon 2 " + ( w ));
-      console.log("3rd compon 3 " + ( vrot[2]));
-      console.log("vrot " + vrot);
-       console.log("vel1 " + vel1);
-      // console.log("vtan " +vtan);
-      // console.log("vnorm " +vnorm);
-      // console.log("nvec " + controlpoints[icp].normal);
-      // console.log("tvec " + controlpoints[icp].tangential);
     }; // end loop control points
-    console.log(GammaNew);
-    // console.log(GammaOld);
-    // console.log(math.subtract(GammaNew, GammaOld));
     refererror =math.max(math.abs(GammaNew));
-    refererror =Math.max(refererror,0.00000001);
-    error =math.max(math.abs(math.subtract(GammaNew, GammaOld)));
+    refererror =Math.max(refererror,0.001);
+    // var errorold = error;
+    error =math.max(math.abs(math.subtract(GammaNew, Gamma)));
+    // console.log("error absolute " + error);
     error= error/refererror;
-    console.log(error + " in iteration " + kiter);
+
+      var temp1 = (kiter+1)*1.0;
+      ConvWeight = Math.max((1-error)/((Math.max(controlpoints.length/10 , ((kiter+1)/10.0))*2.0)) , 0.5/(Math.max(controlpoints.length , ((kiter+1)*1.0))));
+      ConvWeight = Math.max((1-error)/(Math.sqrt(controlpoints.length*1)), 1/(Math.sqrt(controlpoints.length*1)));
+
+      if (controlpoints.length<60) {
+        ConvWeight = Math.max((1-error)*0.3,0.1);
+      } else {
+        ConvWeight =  Math.max((1-error),0.5)/Math.pow(controlpoints.length , 8/10);
+
+      }
+      // ConvWeight =  Math.max(0.5,0.5)/Math.pow(controlpoints.length , 7/10);
+      // ConvWeight = 1/Math.pow(controlpoints.length , 1.1);
+      // ConvWeight = Math.min(ConvWeight , 0.05);
+      // ConvWeight = 0.5*(ConvWeight2 + ConvWeight);
+
+
+
+    // console.log(error*100 + "%  in iteration " + kiter);
     if (error<errorlimit) {
       kiter=Niterations;
+      console.log("very small error achieved");
     }
+
+    console.log(error*100 + "%  in iteration " + kiter + " with conv " + ConvWeight);
+
+
     for (var ig = 0; ig < GammaNew.length; ig++) {
-      GammaNew[ig] = 0.8*GammaOld[ig] + 0.2*GammaNew[ig];
+      GammaNew[ig] = (1-ConvWeight)*Gamma[ig] + ConvWeight*GammaNew[ig];
     }
-    // console.log("u " +up);
-    // console.log("v " +vp);
-    // console.log("w " +wp);
-    console.log("vel1 " + vel1);
-
+// (1+Math.random()*0.4-0.2)*
   }; // end iteration loop
-
   console.log(GammaNew);
-  // console.log(MatrixU);
 
-  // rotor_wake_system.rings= rings;
+
   return(GammaNew);
 };
 
 
 
-
-
-
-//
-// function solve_lifting_line_system_direct(rotor_wake_system, wind, Omega){
-//   var controlpoints = rotor_wake_system.controlpoints;
-//   var rings = rotor_wake_system.rings;
-//   var velocity_induced;
-//   var u = math.zeros(controlpoints.length);
-//   var v = math.zeros(controlpoints.length);
-//   var w = math.zeros(controlpoints.length);
-//   var alpha = math.zeros(controlpoints.length);
-//   var GammaNew = math.zeros(controlpoints.length);
-//   var vel1; var vmag; var vn = math.zeros(controlpoints.length);
-//   var cl;
-//   var vtan; var vnorm; var vall;
-//   var Niterations = 140;
-//   var MatrixU = math.zeros(controlpoints.length, rings.length);
-//   var MatrixV = math.zeros(controlpoints.length, rings.length);
-//   var MatrixW = math.zeros(controlpoints.length, rings.length);
-//
-//   for (var icp= 0; icp < controlpoints.length; icp++) {
-//     for (var jring = 0; jring < rings.length; jring++) {
-//       rings[jring] = update_Gamma_sinle_ring(rings[jring],1,1);
-//       velocity_induced = velocity_induced_sinle_ring(rings[jring], controlpoints[icp].coordinates);
-//       MatrixU[icp][jring] = velocity_induced[0];
-//       MatrixV[icp][jring] = velocity_induced[1];
-//       MatrixW[icp][jring] = velocity_induced[2];
-//     }
-//
-//   };
-//
-//   for (var irig = 0; irig < rings.length; irig++) {
-//     rings[irig] = update_Gamma_sinle_ring(rings[irig],0,1);
-//   };
-//
-//   for (var  kiter = 0; kiter < Niterations; kiter++) {
-//     for (var irig = 0; irig < rings.length; irig++) {
-//       rings[irig] = update_Gamma_sinle_ring(rings[irig],GammaNew[irig],0.1);
-//     };
-//
-//     for (var icp= 0; icp < controlpoints.length; icp++) {
-//       u=0; v=0; w=0;
-//       for (var jring = 0; jring < rings.length; jring++) {
-//         rings[jring] = update_Gamma_sinle_ring(rings[jring],1,1);
-//         velocity_induced = velocity_induced_sinle_ring(rings[jring], controlpoints[icp].coordinates);
-//         u+= MatrixU[icp][jring]*GammaNew[jring];
-//         v+= MatrixV[icp][jring]*GammaNew[jring];
-//         w+= MatrixW[icp][jring]*GammaNew[jring];
-//       };
-//       vel1 = [wind[0]+velocity_induced[i][0] , wind[1]+velocity_induced[i][1] , wind[2]+velocity_induced[i][2]];
-//       vtan = math.dot(controlpoints[icp].tangential , vel1);
-//       vnorm = math.dot(controlpoints[icp].normal , vel1);
-//       vmag = Math.sqrt(math.dot(vel1 , vel1));
-//       alpha[icp] = Math.atan(vnorm/vtan);
-//       cl =2*Math.PI*Math.sin(alpha[icp]);
-//       GammaNew[icp] = cl*0.5*vmag*controlpoints[icp].chord;
-//
-//     }; // end loop control points
-//   }; // end iteration loop
-// };
-//
-//
-//   for (var  k = 0; k < Niterations; k++) {
-//     for (var i = 0; i < controlpoints.length; i++) {
-//
-//       vall = velocity_induced_rings(rings,controlpoints[i].coordinates);
-//       // console.log("velocity out");
-//       // console.log(vall);
-//       velocity_induced.push(vall);
-//       // console.log(velocity_induced);
-//       vel1 = [wind[0]+velocity_induced[i][0] , wind[1]+velocity_induced[i][1] , wind[2]+velocity_induced[i][2]];
-//       vtan = math.dot(controlpoints[i].tangential , vel1);
-//       vnorm = math.dot(controlpoints[i].normal , vel1);
-//       vmag = Math.sqrt(math.dot(vel1 , vel1));
-//       alpha[i] = Math.atan(vnorm/vtan);
-//       cl =2*Math.PI*Math.sin(alpha[i]);
-//       GammaNew[i] = cl*0.5*vmag*controlpoints[i].chord;
-//       // vn[i] = velocity_induced[i][2];
-//     };
-//     for (var i = 0; i < rings.length; i++) {
-//       rings[i] = update_Gamma_sinle_ring(rings[i],GammaNew[i],0.001);
-//     };
-//     velocity_induced=[];
-//     // console.log("vel1");
-//     // console.log(vel1);
-//     // console.log("alpha");
-//     // console.log(alpha);
-//     // console.log("Gamma");
-//     // console.log(GammaNew);
-//     // console.log("vn");
-//     // console.log(vn);
-//   };
-//
-//
-//
-//   rotor_wake_system.rings= rings;
-//   return(GammaNew);
-// };
 
 
 function update_Gamma_sinle_ring(ring,GammaNew,WeightNew) {
@@ -395,7 +278,7 @@ function velocity_induced_single_ring(ring,controlpoint) {
   var XV1;
   var XV2;
   var XVP;
-  var CORE = 0.000001;
+  var CORE = 0.00001;
   for (var i = 0; i < ring.filaments.length; i++) {
     GAMMA = ring.filaments[i].Gamma;
     XV1 = [ ring.filaments[i].x1 , ring.filaments[i].y1   ,  ring.filaments[i].z1 ];
@@ -404,7 +287,8 @@ function velocity_induced_single_ring(ring,controlpoint) {
     tempvel1 =velocity_3D_from_vortex_filament(GAMMA,XV1, XV2, controlpoint ,CORE);
     //  console.log(i);
     //  console.log(tempvel1)
-    //  console.log(velind)
+    //  console.log("XV1 " + XV1 + " XV2 " + XV2 + " XVP " + XVP );
+    // //  console.log(velind)
     // velind = math.add(velind,tempvel1);
     velind[0]+=tempvel1[0];
     velind[1]+=tempvel1[1];

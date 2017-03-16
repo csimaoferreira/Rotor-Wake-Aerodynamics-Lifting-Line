@@ -108,7 +108,7 @@ document.getElementsByTagName( 'head' )[0].appendChild( link );
         maketestplot(500, 400)
       </script>
 
-      <section>  
+      <section>
 
       </section>
         <script type="text/javascript">
@@ -119,13 +119,16 @@ document.getElementsByTagName( 'head' )[0].appendChild( link );
         }
         var maxradius = math.max(s_Array);
 
-        var theta_Array = createArraySequence(0.,Math.PI/20, 25*Math.PI);
+        // var s_Array = createArraySequence(0.,0.2, 1);
+        // var s_Array = createArraySequence(0.,.1, 1);
 
-        // var rotor_wake_system = create_rotor_geometry(s_Array, maxradius, 6, 1, theta_Array,3);
-        var rotor_wake_system = create_straight_wing_geometry(s_Array);
+        var theta_Array = createArraySequence(0.,Math.PI/40, 25*Math.PI);
+
+        var rotor_wake_system = create_rotor_geometry(s_Array, maxradius, 6, 1, theta_Array,3);
+        // var rotor_wake_system = create_straight_wing_geometry(s_Array);
 
 
-          solve_lifting_line_system_matrix_approach(rotor_wake_system, [1, 0, 0.1], 0*6/maxradius);
+          solve_lifting_line_system_matrix_approach(rotor_wake_system, [1, 0, 0.], 6/maxradius);
         </script>
 
       <section> <h2>Learning objectives</h2>
