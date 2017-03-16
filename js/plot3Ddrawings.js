@@ -9,7 +9,7 @@ function maketestplot(width,height) {
     scene = new THREE.Scene();
     // create a camera, which defines where we're looking at.
     camera = new THREE.PerspectiveCamera(25, width / height, 0.3, 100000);
-    console.log(window);
+    // console.log(window);
     // create a render and set the size
     renderer = new THREE.WebGLRenderer();
     renderer.setClearColor(new THREE.Color(0xEEEEEE));
@@ -115,7 +115,7 @@ function createWakeMesh() {
    });
 
   //  bound vortices
-   var geometry = new THREE.Geometry();
+   var geometry = new THREE.Geometry();  
    geometry.vertices.push(
    	new THREE.Vector3( filaments[0].x1, filaments[0].y1, filaments[0].z1 ),
     new THREE.Vector3( filaments[0].x2, filaments[0].y2, filaments[0].z2 )

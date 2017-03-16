@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="css/reveal.css">
   <link rel="stylesheet" href="css/theme/tudelft_simple.css" id="theme">
   <link rel="stylesheet" href="lib/css/zenburn.css">
-  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_SVG"></script>
+  <!-- <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_SVG"></script> -->
   <!-- <script src="js\MathJax.js?config=TeX-AMS-MML_SVG"></script> -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/84/three.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
@@ -108,7 +108,25 @@ document.getElementsByTagName( 'head' )[0].appendChild( link );
         maketestplot(500, 400)
       </script>
 
+      <section>  
 
+      </section>
+        <script type="text/javascript">
+        // console.log(' I am here');
+        var s_Array = createArraySequence(0.,Math.PI/15, Math.PI);
+        for (var i = 0; i < s_Array.length; i++) {
+          s_Array[i]= (-1*(math.cos(s_Array[i])-1)/2*0.8+0.2)*(50);
+        }
+        var maxradius = math.max(s_Array);
+
+        var theta_Array = createArraySequence(0.,Math.PI/20, 25*Math.PI);
+
+        // var rotor_wake_system = create_rotor_geometry(s_Array, maxradius, 6, 1, theta_Array,3);
+        var rotor_wake_system = create_straight_wing_geometry(s_Array);
+
+
+          solve_lifting_line_system_matrix_approach(rotor_wake_system, [1, 0, 0.1], 0*6/maxradius);
+        </script>
 
       <section> <h2>Learning objectives</h2>
         <p align="left"> To be able to program a lifting line model for application to an horizontal axis wind turbine... </p>
@@ -168,7 +186,7 @@ document.getElementsByTagName( 'head' )[0].appendChild( link );
 
               <section>
 
-                <script type="text/javascript">
+                <!-- <script type="text/javascript">
 
                   var GAMMA =2*Math.PI;
                   var  XV1 =[ 0, 0, -1000000000 ];
@@ -191,7 +209,7 @@ document.getElementsByTagName( 'head' )[0].appendChild( link );
                   var result =solve_lifting_line_system_direct(rotor_wake_system,[1,0,0.1]);
 
                 </script>
-
+ -->
 
 
 
