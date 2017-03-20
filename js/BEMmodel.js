@@ -211,7 +211,7 @@ function solveStreamtube(Uinf, r1_R, r2_R, rootradius_R, tipradius_R , Omega, Ra
   var Niterations =100; // maximum number of iterations
   var Erroriterations =0.00001; // error limit for iteration rpocess, in absolute value of induction
   for (var i = 0; i < Niterations; i++) {
-
+ 
     ///////////////////////////////////////////////////////////////////////
     // this is the block "Calculate velocity and loads at blade element"
     ///////////////////////////////////////////////////////////////////////
