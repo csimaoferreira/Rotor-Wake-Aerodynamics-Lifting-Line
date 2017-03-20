@@ -252,7 +252,7 @@ Plotly.newPlot(IDDIV, data, layout);
 
 
 
-
+ 
 
 
 function clearBox(elementID)

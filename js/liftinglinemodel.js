@@ -200,7 +200,7 @@ function solve_lifting_line_system_matrix_approach(rotor_wake_system,wind, Omega
       GammaNew[icp] = cl*0.5*vmag*controlpoints[icp].chord;
     }; // end loop control points
     refererror =math.max(math.abs(GammaNew));
-    refererror =Math.max(refererror,0.001);
+    refererror =Math.max(refererror,0.001); 
     // var errorold = error;
     error =math.max(math.abs(math.subtract(GammaNew, Gamma)));
     // console.log("error absolute " + error);
