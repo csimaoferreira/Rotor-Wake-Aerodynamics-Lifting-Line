@@ -200,7 +200,7 @@ function solve_lifting_line_system_matrix_approach(rotor_wake_system,wind, Omega
       GammaNew[icp] = cl*0.5*vmag*controlpoints[icp].chord;
     }; // end loop control points
     refererror =math.max(math.abs(GammaNew));
-    refererror =Math.max(refererror,0.001); 
+    refererror =Math.max(refererror,0.001);
     // var errorold = error;
     error =math.max(math.abs(math.subtract(GammaNew, Gamma)));
     // console.log("error absolute " + error);
@@ -303,49 +303,48 @@ function velocity_induced_single_ring(ring,controlpoint) {
 
 
 function velocity_3D_from_vortex_filament(GAMMA,XV1, XV2, XVP1,CORE){
-  var X1 =XV1[0];
-  var Y1 =XV1[1];
-  var Z1 =XV1[2];
-  var X2 =XV2[0];
-  var Y2 =XV2[1];
-  var Z2 =XV2[2];
-  var XP =XVP1[0];
-  var YP =XVP1[1];
-  var ZP =XVP1[2];
+  // function to calculate the velocity induced by a straight 3D vortex filament
+  // with circulation GAMMA at a point VP1. The geometry of the vortex filament
+  // is defined by its edges: the filaments start at XV1 and ends at XV2.
+  // the input CORE defines a vortex core radius, inside which the velocity
+  // is defined  as a solid body rotation.
+  // The function is adapted from the algorithm presented in:
+  //                Katz, Joseph, and Allen Plotkin. Low-speed aerodynamics.
+  //                Vol. 13. Cambridge university press, 2001.
 
-  var ERR=CORE;
+  // read coordinates that define the vortex filament
+  var X1 =XV1[0]; var Y1 =XV1[1]; var Z1 =XV1[2]; // start point of vortex filament
+  var X2 =XV2[0]; var Y2 =XV2[1]; var Z2 =XV2[2]; // end point of vortex filament
+  // read coordinates of target point where the velocity is calculated
+  var XP =XVP1[0]; var YP =XVP1[1]; var ZP =XVP1[2];
 
 
 
-
+  // calculate geometric relations for integral of the velocity induced by filament
   var R1=Math.sqrt(Math.pow((XP-X1), 2) + Math.pow((YP-Y1), 2) + Math.pow((ZP-Z1), 2) );
   var R2=Math.sqrt( Math.pow((XP-X2), 2) + Math.pow((YP-Y2), 2) + Math.pow((ZP-Z2), 2) );
-
-  if (R1<ERR) {
-    R1=ERR;
-    GAMMA = 0;
-  };
-
-  if (R2<ERR) {
-    R2=ERR;
-    GAMMA = 0;
-
-  };
-
   var R1XR2_X=(YP-Y1)*(ZP-Z2)-(ZP-Z1)*(YP-Y2);
   var R1XR2_Y=-(XP-X1)*(ZP-Z2)+(ZP-Z1)*(XP-X2);
   var R1XR2_Z=(XP-X1)*(YP-Y2)-(YP-Y1)*(XP-X2);
-
   var R1XR_SQR=Math.pow(R1XR2_X, 2)+ Math.pow(R1XR2_Y, 2)+ Math.pow(R1XR2_Z, 2);
-
-  if (R1XR_SQR<Math.pow(ERR,2)) {
-    R1XR_SQR=Math.pow(ERR,2);
-    GAMMA = 0;
-
-  };
-
   var R0R1 = (X2-X1)*(XP-X1)+(Y2-Y1)*(YP-Y1)+(Z2-Z1)*(ZP-Z1);
   var R0R2 = (X2-X1)*(XP-X2)+(Y2-Y1)*(YP-Y2)+(Z2-Z1)*(ZP-Z2);
+
+  // check if target point is in the vortex filament core,
+  // and modify to solid body rotation
+  if (R1XR_SQR<Math.pow(CORE,2)) {
+    R1XR_SQR=Math.pow(CORE,2);
+    // GAMMA = 0;
+  };
+  if (R1<CORE) {
+    R1=CORE;
+    // GAMMA = 0;
+  };
+  if (R2<CORE) {
+    R2=CORE;
+    // GAMMA = 0;
+  };
+
 
   var K=GAMMA/4/Math.PI/R1XR_SQR*(R0R1/R1 -R0R2/R2 );
 
@@ -353,13 +352,7 @@ function velocity_3D_from_vortex_filament(GAMMA,XV1, XV2, XVP1,CORE){
   var V=K*R1XR2_Y;
   var W=K*R1XR2_Z;
 
-
-// console.log("GAMMMA");
-// console.log(GAMMA);
-//
-//   console.log("U V W");
-//   console.log([U, V, W]);
-
+  // output results, vector with the three velocity components
   var results = [U, V, W];
   return(results) };
 

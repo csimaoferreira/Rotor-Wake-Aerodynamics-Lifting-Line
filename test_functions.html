@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>AE4-135 Rotor/Wake Aerodynamics</title>
+
+  <link rel="stylesheet" href="css/reveal.css">
+  <link rel="stylesheet" href="css/theme/tudelft_simple.css" id="theme">
+  <link rel="stylesheet" href="lib/css/zenburn.css">
+  <!-- <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_SVG"></script> -->
+  <!-- <script src="js\MathJax.js?config=TeX-AMS-MML_SVG"></script> -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/84/three.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+  <script src="js\plot3Ddrawings.js" charset="utf-8"></script>
+
+
+  <script src="js/plotly-latest.min.js"></script>
+  <script src="js\math.min.js"></script>
+
+  <!-- <script type="text/javascript" async
+  src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
+</script> -->
+
+
+<script src="js\liftinglinemodel.js"></script>
+<script src="js/plotsupportfunctions.js"></script>
+<script src="js/BEMmodel.js"></script>
+<script src="plots_of_functions\several_plots.js"></script>
+
+<script src="js/controls/OrbitControls.js"></script>
+
+
+
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.9.1/highlight.min.js"></script> -->
+<script src="plugin\highlight\highlight.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+<script>
+var link = document.createElement( 'link' );
+link.rel = 'stylesheet';
+link.type = 'text/css';
+link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+document.getElementsByTagName( 'head' )[0].appendChild( link );
+</script>
+
+</head>
+
+<body >
+
+  <div id="tudborder">
+    <img src="images/tud_logo_white.svg" width=80% style="position: absolute; left: 0; right: 0; bottom: 0; margin-left: auto; margin-right: auto;">
+  </div>
+  <div id="presentation", class="reveal">
+    <div class="slides">
+
+
+
+      <section> <h2>Drawing of mesh</h2>
+        <!-- Div which will hold the Output -->
+        <div id="WebGL-output" style="width: 500px, float:center">
+        </div>
+      </section>
+
+
+      <!-- Javascript code that runs our Three.js examples -->
+      <script type="text/javascript">
+        maketestplot(500, 400)
+      </script>
+
+
+      <section> <h2>Verify your code: velocity induced by a straight filament</h2>
+        <div  style="width: 50%; float:left " >
+
+        <p> Change the direction and magnitude of the vortex filament.
+          Change the location of the point to evaluate the induced velocity.</p>
+        <!-- <div align="center"> -->
+
+        <form >
+          <p>Circulation $\Gamma :$ <input type="text" id="Gamma"  value="1.0" size="4"> </p>
+          <p>
+            $X_1 = $  $x_1:$ <input type="text" id="x1"  value="0.0" size="4">
+              $y_1:$<input type="text" id="y1"  value="0.0" size="4">
+              $z_1:$<input type="text" id="z1"  value="0.0" size="4">
+          </p>
+          <p>
+            $X_2 = $  $x_2:$ <input type="text" id="x2"  value="0.0" size="4">
+              $y_2:$<input type="text" id="y2"  value="0.0" size="4">
+              $z_2:$<input type="text" id="z2"  value="1" size="4">
+          </p>
+          <p>
+            $X_p = $  $x_p:$ <input type="text" id="xp"  value="0.0" size="4">
+              $y_p:$<input type="text" id="yp"  value="0.5" size="4">
+              $z_p:$<input type="text" id="zp"  value="0.5" size="4">
+          </p>
+          <p> <input type="button" value="Calculate" onclick="Calculate_velocityinducedatXp()"> </p>
+
+          <p><span  id="message_velocityinducedatXp" >  </span>  </p>
+        </form>
+
+        <script type="text/javascript">
+          function Calculate_velocityinducedatXp() {
+            var x1 = parseFloat(document.getElementById("x1").value);
+            var y1 = parseFloat(document.getElementById("y1").value);
+            var z1 = parseFloat(document.getElementById("z1").value);
+            var x2 = parseFloat(document.getElementById("x2").value);
+            var y2 = parseFloat(document.getElementById("y2").value);
+            var z2 = parseFloat(document.getElementById("z2").value);
+            var xp = parseFloat(document.getElementById("xp").value);
+            var yp = parseFloat(document.getElementById("yp").value);
+            var zp = parseFloat(document.getElementById("zp").value);
+            var Gamma = parseFloat(document.getElementById("Gamma").value);
+            console.log([x1, y1, z1]);
+            var veloc = velocity_3D_from_vortex_filament(Gamma,[x1, y1, z1], [x2,  y2, z2], [xp, yp, zp], 0.00001);
+            document.getElementById("message_velocityinducedatXp").innerHTML = "The velocity at point Xp is u:" + veloc[0].toFixed(3) +
+              " v:" + veloc[1].toFixed(3) + " w:" + veloc[2].toFixed(3) ;
+
+          }
+        </script>
+        </div>
+        <div  style="width: 50%; float:left ">
+          <img src="images/velocityinducedvortexsegment.svg" >
+        </div>
+
+
+        <!-- <table width="30%" border="4">
+        <tr><td colspan="2" align="center">Vortex segment</td></tr>
+        <form >
+
+        <tr><td>$x_1$ <input type="number" id="x1" name="TextBox1"></td>
+            <td>$y_1$<input type="number" id="y2" name="TextBox2"></td>
+        </tr></table></div> -->
+      </form>
+      </section>
+
+
+
+        <script type="text/javascript">
+        // console.log(' I am here');
+        // var s_Array = createArraySequence(0.,Math.PI/15, Math.PI);
+        // for (var i = 0; i < s_Array.length; i++) {
+        //   s_Array[i]= (-1*(math.cos(s_Array[i])-1)/2*0.8+0.2)*(50);
+        // }
+        // var maxradius = math.max(s_Array);
+        //
+        // // var s_Array = createArraySequence(0.,0.2, 1);
+        // // var s_Array = createArraySequence(0.,.1, 1);
+        //
+        // var theta_Array = createArraySequence(0.,Math.PI/40, 25*Math.PI);
+        //
+        // var rotor_wake_system = create_rotor_geometry(s_Array, maxradius, 6, 1, theta_Array,3);
+        // var rotor_wake_system = create_straight_wing_geometry(s_Array);
+        for (var i = 0; i < 20; i++) {
+          var dis=i*0.01;
+          var vect = velocity_3D_from_vortex_filament(1,[0, 0 , 0], [0, 0 , 1], [0 , 0.9+dis ,0.5], 1.0)
+          console.log("dis is " + (dis+0.9) + " velocity is " + vect);
+        };
+
+
+
+
+
+
+        </script>
+
+
+
+      </div>
+    </div>
+
+    <script src="lib/js/head.min.js"></script>
+    <script src="js/reveal.js"></script>
+
+    <script>
+    Reveal.initialize({
+      history: true,
+
+      math: {
+        // mathjax: 'https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML',
+        // config: 'TeX-MML-AM_CHTML'
+        // 'TeX-AMS_HTML-full'
+      },
+
+      dependencies: [
+        // { src: 'plugin/math/math.js', async: true }
+        // ,
+        {  src: 'plugin/mathsvg/math.js', async: true},
+        // { src: '/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+      ]
+    });
+
+    // Shows the slide number using default formatting
+    Reveal.configure({ slideNumber: true });
+    // Slide number formatting can be configured using these variables:
+    //  "h.v":  horizontal . vertical slide number (default)
+    //  "h/v":  horizontal / vertical slide number
+    //    "c":  flattened slide number
+    //  "c/t":  flattened slide number / total slides
+    </script>
+
+  </body>
+  </html>
