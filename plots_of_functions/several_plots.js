@@ -6,7 +6,7 @@ function nondim(array1, adim){
   return output
 };
 
-
+ 
 
 
 function plot_cl_alpha_cd(IDDIV) {
@@ -252,7 +252,7 @@ Plotly.newPlot(IDDIV, data, layout);
 
 
 
- 
+
 
 
 function clearBox(elementID)
