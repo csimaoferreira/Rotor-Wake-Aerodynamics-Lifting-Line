@@ -69,14 +69,68 @@ document.getElementsByTagName( 'head' )[0].appendChild( link );
       </script>
 
 
-      <section> <h2>Velocity induced by one filament</h2>
-        <p> HTML code for our basic calculator </p>
-        <div align="center">
-        <table width="30%" border="4">
-        <tr><td colspan="2" align="center">Display Area</td></tr>
-        <tr><td><input type="text" id="Text1" name="TextBox1"></td>
-            <td><input type="text" id="Text2" name="TextBox2"></td>
-        </tr></table></div>
+      <section> <h2>Verify your code: velocity induced by a straight filament</h2>
+        <div  style="width: 50%; float:left " >
+
+        <p> Change the direction and magnitude of the vortex filament.
+          Change the location of the point to evaluate the induced velocity.</p>
+        <!-- <div align="center"> -->
+
+        <form >
+          <p>Circulation $\Gamma :$ <input type="text" id="Gamma"  value="1.0" size="4"> </p>
+          <p>
+            $X_1 = $  $x_1:$ <input type="text" id="x1"  value="0.0" size="4">
+              $y_1:$<input type="text" id="y1"  value="0.0" size="4">
+              $z_1:$<input type="text" id="z1"  value="0.0" size="4">
+          </p>
+          <p>
+            $X_2 = $  $x_2:$ <input type="text" id="x2"  value="0.0" size="4">
+              $y_2:$<input type="text" id="y2"  value="0.0" size="4">
+              $z_2:$<input type="text" id="z2"  value="1" size="4">
+          </p>
+          <p>
+            $X_p = $  $x_p:$ <input type="text" id="xp"  value="0.0" size="4">
+              $y_p:$<input type="text" id="yp"  value="0.5" size="4">
+              $z_p:$<input type="text" id="zp"  value="0.5" size="4">
+          </p>
+          <p> <input type="button" value="Calculate" onclick="Calculate_velocityinducedatXp()"> </p>
+
+          <p><span  id="message_velocityinducedatXp" >  </span>  </p>
+        </form>
+
+        <script type="text/javascript">
+          function Calculate_velocityinducedatXp() {
+            var x1 = parseFloat(document.getElementById("x1").value);
+            var y1 = parseFloat(document.getElementById("y1").value);
+            var z1 = parseFloat(document.getElementById("z1").value);
+            var x2 = parseFloat(document.getElementById("x2").value);
+            var y2 = parseFloat(document.getElementById("y2").value);
+            var z2 = parseFloat(document.getElementById("z2").value);
+            var xp = parseFloat(document.getElementById("xp").value);
+            var yp = parseFloat(document.getElementById("yp").value);
+            var zp = parseFloat(document.getElementById("zp").value);
+            var Gamma = parseFloat(document.getElementById("Gamma").value);
+            console.log([x1, y1, z1]);
+            var veloc = velocity_3D_from_vortex_filament(Gamma,[x1, y1, z1], [x2,  y2, z2], [xp, yp, zp], 0.00001);
+            document.getElementById("message_velocityinducedatXp").innerHTML = "The velocity at point Xp is u:" + veloc[0].toFixed(3) +
+              " v:" + veloc[1].toFixed(3) + " w:" + veloc[2].toFixed(3) ;
+
+          }
+        </script>
+        </div>
+        <div  style="width: 50%; float:left ">
+          <img src="images/velocityinducedvortexsegment.svg" >
+        </div>
+
+
+        <!-- <table width="30%" border="4">
+        <tr><td colspan="2" align="center">Vortex segment</td></tr>
+        <form >
+
+        <tr><td>$x_1$ <input type="number" id="x1" name="TextBox1"></td>
+            <td>$y_1$<input type="number" id="y2" name="TextBox2"></td>
+        </tr></table></div> -->
+      </form>
       </section>
 
 
