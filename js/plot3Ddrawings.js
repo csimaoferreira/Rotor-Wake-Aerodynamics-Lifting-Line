@@ -2,9 +2,14 @@
 
 
 var camera, controls, scene, renderer;
+var rotation_velocity = 2*3.14/20;
+var slidewithscene;
 
 // once everything is loaded, we run our Three.js stuff.
 function maketestplot(width,height) {
+
+    
+
     // create a scene, that will hold all our elements such as objects, cameras and lights.
     scene = new THREE.Scene();
     // create a camera, which defines where we're looking at.
@@ -49,8 +54,8 @@ function maketestplot(width,height) {
     // scene.add(sphere);
 
 
-    var line= new createWakeMesh();
-    scene.add(line);
+    var wake= new createWakeMesh();
+    scene.add(wake);
 
     // position and point the camera to the center of the scene
     var csl=0.09;
@@ -78,11 +83,23 @@ function maketestplot(width,height) {
 };
 
 function render() {
+  var d = new Date();
+  var time = (d.getTime())/1000;
+  var rotation = rotation_velocity*time;
+  // var rotation = rotation_velocity*time;
 
+  rotation = rotation % (2*Math.PI);
+  var WakeMesh = scene.getObjectByName( "WakeMesh", true );
+  WakeMesh.rotation.x=rotation;
+
+  requestAnimationFrame(render);
   renderer.render( scene, camera );
+  // controls.update();
 
+  console.log("rotation is " + rotation);
 }
 
+// render();
 
 function createWakeMesh() {
   var s_Array = createArraySequence(0.,Math.PI/30, Math.PI);
@@ -100,7 +117,8 @@ function createWakeMesh() {
   rings = rotor_wake_system.rings;
 
   var lineall = new THREE.Object3D();
- 
+  lineall.name = 'WakeMesh'
+
   var geometry = new THREE.Geometry();
   var material = new THREE.LineBasicMaterial({
 	color: 0xff0000
