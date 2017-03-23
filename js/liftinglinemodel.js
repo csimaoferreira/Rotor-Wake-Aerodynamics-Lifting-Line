@@ -1,4 +1,4 @@
-
+ 
 function create_straight_wing_geometry(span_array){
   var temp1
   var temp2
@@ -300,8 +300,6 @@ function velocity_induced_single_ring(ring,controlpoint) {
 
 
 // 3D velocity induced by a vortex filament
-
-
 function velocity_3D_from_vortex_filament(GAMMA,XV1, XV2, XVP1,CORE){
   // function to calculate the velocity induced by a straight 3D vortex filament
   // with circulation GAMMA at a point VP1. The geometry of the vortex filament
@@ -317,9 +315,6 @@ function velocity_3D_from_vortex_filament(GAMMA,XV1, XV2, XVP1,CORE){
   var X2 =XV2[0]; var Y2 =XV2[1]; var Z2 =XV2[2]; // end point of vortex filament
   // read coordinates of target point where the velocity is calculated
   var XP =XVP1[0]; var YP =XVP1[1]; var ZP =XVP1[2];
-
-
-
   // calculate geometric relations for integral of the velocity induced by filament
   var R1=Math.sqrt(Math.pow((XP-X1), 2) + Math.pow((YP-Y1), 2) + Math.pow((ZP-Z1), 2) );
   var R2=Math.sqrt( Math.pow((XP-X2), 2) + Math.pow((YP-Y2), 2) + Math.pow((ZP-Z2), 2) );
@@ -329,29 +324,26 @@ function velocity_3D_from_vortex_filament(GAMMA,XV1, XV2, XVP1,CORE){
   var R1XR_SQR=Math.pow(R1XR2_X, 2)+ Math.pow(R1XR2_Y, 2)+ Math.pow(R1XR2_Z, 2);
   var R0R1 = (X2-X1)*(XP-X1)+(Y2-Y1)*(YP-Y1)+(Z2-Z1)*(ZP-Z1);
   var R0R2 = (X2-X1)*(XP-X2)+(Y2-Y1)*(YP-Y2)+(Z2-Z1)*(ZP-Z2);
-
   // check if target point is in the vortex filament core,
   // and modify to solid body rotation
-  if (R1XR_SQR<Math.pow(CORE,2)) {
-    R1XR_SQR=Math.pow(CORE,2);
-    // GAMMA = 0;
-  };
-  if (R1<CORE) {
-    R1=CORE;
-    // GAMMA = 0;
-  };
-  if (R2<CORE) {
-    R2=CORE;
-    // GAMMA = 0;
-  };
-
-
+    if (R1XR_SQR<Math.pow(CORE,2)) {
+      R1XR_SQR=Math.pow(CORE,2);
+      // GAMMA = 0;
+    };
+    if (R1<CORE) {
+      R1=CORE;
+      // GAMMA = 0;
+    };
+    if (R2<CORE) {
+      R2=CORE;
+      // GAMMA = 0;
+    };
+  // determine scalar
   var K=GAMMA/4/Math.PI/R1XR_SQR*(R0R1/R1 -R0R2/R2 );
-
+  // determine the three velocity components
   var U=K*R1XR2_X;
   var V=K*R1XR2_Y;
   var W=K*R1XR2_Z;
-
   // output results, vector with the three velocity components
   var results = [U, V, W];
   return(results) };
