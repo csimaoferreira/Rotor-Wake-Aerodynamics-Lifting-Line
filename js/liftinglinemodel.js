@@ -1,4 +1,4 @@
-
+ 
 function create_straight_wing_geometry(span_array){
   var temp1
   var temp2
