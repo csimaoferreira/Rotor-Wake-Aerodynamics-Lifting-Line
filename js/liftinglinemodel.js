@@ -1,4 +1,4 @@
- 
+
 function create_straight_wing_geometry(span_array){
   var temp1
   var temp2
@@ -40,8 +40,9 @@ function create_rotor_geometry(span_array, radius, tipspeedratio, Uinf, theta_ar
   var filaments = [];
   var ring = [];
   var controlpoints = [];
-  var geodef;
-  var r; var angle; var dx; var dz; var dy; var dtheta; var xt; var yt; var zt;
+  var bladepanels = [];
+  var geodef; var geodef2;
+  var r; var angle;  var angle2 ; var dx; var dz; var dy; var dtheta; var xt; var yt; var zt;
   var temp1; var temp2;
 
   for (var krot = 0; krot < nblades; krot++) {
@@ -105,7 +106,6 @@ function create_rotor_geometry(span_array, radius, tipspeedratio, Uinf, theta_ar
         filaments.push(temp1);
       };
 
-
       for (var ifil = 0; ifil < filaments.length; ifil++) {
         temp1=filaments[ifil];
         temp2 = [ temp1.y1*cosrot -  temp1.z1*sinrot , temp1.y1*sinrot +  temp1.z1*cosrot , temp1.y2*cosrot -  temp1.z2*sinrot , temp1.y2*sinrot +  temp1.z2*cosrot ];
@@ -116,45 +116,52 @@ function create_rotor_geometry(span_array, radius, tipspeedratio, Uinf, theta_ar
         filaments[ifil] = temp1;
       }
 
-
-
-
       ring.push({filaments: filaments});
       filaments = [];
+
+      // panel of the blade section
+      geodef = geoBlade(span_array[i]/radius);
+      angle = geodef[1]*Math.PI/180;
+      geodef2 = geoBlade(span_array[i+1]/radius);
+      angle2 = geodef2[1]*Math.PI/180;
+
+      temp1= {
+              p1: [-0.25*geodef[0]*Math.sin(-1*angle) , span_array[i], 0.25*geodef[0]*Math.cos(angle)],
+              p2: [-0.25*geodef2[0]*Math.sin(-1*angle2) , span_array[i+1], 0.25*geodef2[0]*Math.cos(angle2)],
+              p3: [0.75*geodef2[0]*Math.sin(-1*angle2) , span_array[i+1], -0.75*geodef2[0]*Math.cos(angle2)],
+              p4: [0.75*geodef[0]*Math.sin(-1*angle) , span_array[i], -0.75*geodef[0]*Math.cos(angle)]
+              };
+      temp1.p1 = [ 0 ,  temp1.p1[1]*cosrot -  temp1.p1[2]*sinrot , temp1.p1[1]*sinrot +  temp1.p1[2]*cosrot ];
+      temp1.p2 = [ 0 ,  temp1.p2[1]*cosrot -  temp1.p2[2]*sinrot , temp1.p2[1]*sinrot +  temp1.p2[2]*cosrot ];
+      temp1.p3 = [ 0 ,  temp1.p3[1]*cosrot -  temp1.p3[2]*sinrot , temp1.p3[1]*sinrot +  temp1.p3[2]*cosrot ];
+      temp1.p4 = [ 0 ,  temp1.p4[1]*cosrot -  temp1.p4[2]*sinrot , temp1.p4[1]*sinrot +  temp1.p4[2]*cosrot ];
+
+      bladepanels.push(temp1);
     };
 
   };
-  return({controlpoints: controlpoints ,  rings: ring});
+  return({controlpoints: controlpoints ,  rings: ring, bladepanels:bladepanels});
 };
 
 
-function solve_lifting_line_system_matrix_approach(rotor_wake_system,wind, Omega) {
+function solve_lifting_line_system_matrix_approach(rotor_wake_system,wind, Omega, rotorradius) {
   var controlpoints = rotor_wake_system.controlpoints;
   var rings = rotor_wake_system.rings;
+  // initialize variabless
   var velocity_induced =[];
-  var up = [] ;
-  var vp = [];
-  var wp = [];
-  var u = 0;
-  var v = 0;
-  var w = 0;
+  var up = []; var vp = []; var wp = [];
+  var u = 0;  var v = 0;  var w = 0;
+  var radialposition; var azimdir;
   var alpha;
   var GammaNew=[];
-  var Gamma=[];
-  for (var i = 0; i < controlpoints.length; i++) {
-    GammaNew.push(0);
-  };
-
-  // console.log("gam1 is " + GammaNew);
-  var vel1; var vmag; var vn ;
-  var cl;
-  var vtan; var vnorm; var vall; var vrot;
+  var Gamma=[]; for (var i = 0; i < controlpoints.length; i++) { GammaNew.push(0);};
+  var vel1; var vmag; var vaxial; var vazim; var temploads;
   var Niterations = 140;
   var MatrixU = [];
   var MatrixV = [];
   var MatrixW = [];
   var Niterations =1200;
-  var errorlimit = 0.001;
+  var errorlimit = 0.01;
   var error = 1.0; var refererror;
   var ConvWeight =0.1;
 
@@ -163,13 +170,9 @@ function solve_lifting_line_system_matrix_approach(rotor_wake_system,wind, Omega
     for (var jring = 0; jring < rings.length; jring++) {
       rings[jring] = update_Gamma_sinle_ring(rings[jring],1,1);
       velocity_induced = velocity_induced_single_ring(rings[jring], controlpoints[icp].coordinates);
-      // console.log(velocity_induced[0]);
-      // var a = velocity_induced[0]*1
-      // u = velocity_induced[0]*1;
       up.push(velocity_induced[0]*1);
       vp.push(velocity_induced[1]*1);
       wp.push(velocity_induced[2]*1);
-      // console.log(wp);
       velocity_induced =[];
     };
       MatrixU.push(up);
@@ -184,20 +187,28 @@ function solve_lifting_line_system_matrix_approach(rotor_wake_system,wind, Omega
       Gamma.push(GammaNew[ig]);
     }
     for (var icp= 0; icp < controlpoints.length; icp++) {
+      // determine radial position
+      radialposition = Math.sqrt(math.dot(controlpoints[icp].coordinates, controlpoints[icp].coordinates));
       u=0; v=0; w=0;
       for (var jring = 0; jring < rings.length; jring++) {
         u = u + MatrixU[icp][jring]*Gamma[jring];
         v= v + MatrixV[icp][jring]*Gamma[jring];
         w= w + MatrixW[icp][jring]*Gamma[jring];
       };
-      vrot = math.cross([-Omega, 0 , 0]  , controlpoints[icp].coordinates );
-      vel1 = [wind[0]+ u + vrot[0], wind[1]+ v + vrot[1] , wind[2]+ w + vrot[2]];
-      vtan = math.dot(controlpoints[icp].tangential , vel1);
-      vnorm = math.dot(controlpoints[icp].normal , vel1);
-      vmag = Math.sqrt(math.dot(vel1 , vel1));
-      alpha = Math.atan(vnorm/vtan);
-      cl =2*Math.PI*Math.sin(alpha);
-      GammaNew[icp] = cl*0.5*vmag*controlpoints[icp].chord;
+      // calculate total perceived velocity
+      vrot = math.cross([-Omega, 0 , 0]  , controlpoints[icp].coordinates ); // rotational velocity
+      vel1 = [wind[0]+ u + vrot[0], wind[1]+ v + vrot[1] , wind[2]+ w + vrot[2]]; // total perceived velocity at section
+      // calculate azimuthal and axial velocity
+      azimdir = math.cross([-1/radialposition, 0 , 0]  , controlpoints[icp].coordinates ); // rotational direction
+      vazim = math.dot(azimdir , vel1);
+      vaxial =  math.dot([1, 0, 0] , vel1);
+      temploads = loadBladeElement(vaxial, vazim, radialposition/rotorradius);
+      // vtan = math.dot(controlpoints[icp].tangential , vel1);
+      // vnorm = math.dot(controlpoints[icp].normal , vel1);
+      // vmag = Math.sqrt(math.dot(vel1 , vel1));
+      // alpha = Math.atan(vnorm/vtan);
+      // cl =2*Math.PI*Math.sin(alpha); =
+      GammaNew[icp] = temploads[2];
     }; // end loop control points
     refererror =math.max(math.abs(GammaNew));
     refererror =Math.max(refererror,0.001);
@@ -226,10 +237,10 @@ function solve_lifting_line_system_matrix_approach(rotor_wake_system,wind, Omega
     // console.log(error*100 + "%  in iteration " + kiter);
     if (error<errorlimit) {
       kiter=Niterations;
-      console.log("very small error achieved");
+      // console.log("very small error achieved");
     }
 
-    console.log(error*100 + "%  in iteration " + kiter + " with conv " + ConvWeight);
+    // console.log(error*100 + "%  in iteration " + kiter + " with conv " + ConvWeight);
 
 
     for (var ig = 0; ig < GammaNew.length; ig++) {
@@ -237,10 +248,37 @@ function solve_lifting_line_system_matrix_approach(rotor_wake_system,wind, Omega
     }
 // (1+Math.random()*0.4-0.2)*
   }; // end iteration loop
-  console.log(GammaNew);
+  // console.log(GammaNew);
 
 
-  return(GammaNew);
+
+var a_temp=[]; var aline_temp=[]; var r_R_temp = []; var Fnorm_temp=[]; var Ftan_temp=[]; var Gamma_temp=[];
+// calculate solution of induction and forces
+for (var icp= 0; icp < controlpoints.length; icp++) {
+  // determine radial position
+  radialposition = Math.sqrt(math.dot(controlpoints[icp].coordinates, controlpoints[icp].coordinates));
+  u=0; v=0; w=0;
+  for (var jring = 0; jring < rings.length; jring++) {
+    u = u + MatrixU[icp][jring]*Gamma[jring];
+    v= v + MatrixV[icp][jring]*Gamma[jring];
+    w= w + MatrixW[icp][jring]*Gamma[jring];
+  };
+  // calculate total perceived velocity
+  vrot = math.cross([-Omega, 0 , 0]  , controlpoints[icp].coordinates ); // rotational velocity
+  vel1 = [wind[0]+ u + vrot[0], wind[1]+ v + vrot[1] , wind[2]+ w + vrot[2]]; // total perceived velocity at section
+  // calculate azimuthal and axial velocity
+  azimdir = math.cross([-1/radialposition, 0 , 0]  , controlpoints[icp].coordinates ); // rotational direction
+  vazim = math.dot(azimdir , vel1);
+  vaxial =  math.dot([1, 0, 0] , vel1);
+  temploads = loadBladeElement(vaxial, vazim, radialposition/rotorradius);
+  a_temp.push(-(u + vrot[0])/wind[0]);
+  aline_temp.push(vazim/(radialposition*Omega)-1);
+  r_R_temp.push(radialposition/rotorradius);
+  Fnorm_temp.push(temploads[0]);
+  Ftan_temp.push(temploads[1]);
+  Gamma_temp.push(temploads[2]);
+}; // end loop control points
+  return({a: a_temp , aline: aline_temp, r_R: r_R_temp, Fnorm: Fnorm_temp, Ftan: Ftan_temp , Gamma: Gamma_temp});
 };
 
 
