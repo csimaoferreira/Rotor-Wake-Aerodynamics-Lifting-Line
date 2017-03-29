@@ -54,23 +54,25 @@ document.getElementsByTagName( 'head' )[0].appendChild( link );
   <div id="presentation", class="reveal">
     <div class="slides">
 
-      <section>  <h1>Lifting line model</h1>
-        <div style="width: 25%; float: left">
-          <img src="images/annulifinal2.svg" >
-        </div>
-        <div style="width: 74%; float: left">
-          <p>Course Rotor and Wake Aerodynamics</p>
-        </div>
-        <div style="width: 100%; float: left">
-        <p class="bottomcall">
-          Press right arrow to continue.
-        </p>
-      </div>
+      <section id="Coverslide">  <h1>Lifting line model</h1>
+          <div style="width: 100%; float: left">
+            <p align="justify">Course Rotor and Wake Aerodynamics</p>
+          </div>
+          <!-- Div which will hold the Output -->
+          <div id="WebGL-output" style="width: 1000px, float:center"> </div>
+          <!-- Javascript code that runs our Three.js examples -->
+          <script type="text/javascript">
+          maketestplot(900, 400)
+          </script>
+          <div style="width: 100%; float: left">
+            <p class="bottomcall">
+              Press right arrow to continue.
+            </p>
+          </div>
+    </section>
 
-      </section>
-
-      <section>        <!-- <h2>How to use the arrow buttons?</h2> -->
-        <section><h2>How to use the arrow buttons?</h2>
+    <section>        <!-- <h2>How to use the arrow buttons?</h2> -->
+      <section><h2>How to use the arrow buttons?</h2>
 
         <p align="justify">On the bottom right there are four directional arrows. </p>
         <ul>
@@ -86,141 +88,105 @@ document.getElementsByTagName( 'head' )[0].appendChild( link );
       </section>
 
 
-        <section><h2>Use the up arrow to retun up</h2>
+      <section><h2>Use the up arrow to retun up</h2>
 
         <p align="justify">Use the side arrows to move horizontally. </p>
-        </section>
-
-
-
       </section>
 
 
-      <section> <h2>Drawing of mesh</h2>
-        <!-- Div which will hold the Output -->
-        <div id="WebGL-output" style="width: 500px, float:center">
-        </div>
-      </section>
+
+    </section>
 
 
-      <!-- Javascript code that runs our Three.js examples -->
-      <script type="text/javascript">
-        maketestplot(500, 400)
-      </script>
 
-      <section>
+    <script type="text/javascript">
+      // console.log(' I am here');
+      var s_Array = createArraySequence(0.,Math.PI/15, Math.PI);
+      for (var i = 0; i < s_Array.length; i++) {
+        s_Array[i]= (-1*(math.cos(s_Array[i])-1)/2*0.8+0.2)*(50);
+      }
+      var maxradius = math.max(s_Array);
 
-      </section>
-        <script type="text/javascript">
-        // console.log(' I am here');
-        var s_Array = createArraySequence(0.,Math.PI/15, Math.PI);
-        for (var i = 0; i < s_Array.length; i++) {
-          s_Array[i]= (-1*(math.cos(s_Array[i])-1)/2*0.8+0.2)*(50);
-        }
-        var maxradius = math.max(s_Array);
+      // var s_Array = createArraySequence(0.,0.2, 1);
+      // var s_Array = createArraySequence(0.,.1, 1);
 
-        // var s_Array = createArraySequence(0.,0.2, 1);
-        // var s_Array = createArraySequence(0.,.1, 1);
+      var theta_Array = createArraySequence(0.,Math.PI/40, 25*Math.PI);
 
-        var theta_Array = createArraySequence(0.,Math.PI/40, 25*Math.PI);
-
-        var rotor_wake_system = create_rotor_geometry(s_Array, maxradius, 6, 1, theta_Array,3);
-        // var rotor_wake_system = create_straight_wing_geometry(s_Array);
+      var rotor_wake_system = create_rotor_geometry(s_Array, maxradius, 6, 1, theta_Array,3);
+      // var rotor_wake_system = create_straight_wing_geometry(s_Array);
 
 
-          solve_lifting_line_system_matrix_approach(rotor_wake_system, [1, 0, 0.], 6/maxradius);
-        </script>
+      solve_lifting_line_system_matrix_approach(rotor_wake_system, [1, 0, 0.], 6/maxradius);
+    </script>
 
-      <section> <h2>Learning objectives</h2>
-        <p align="left"> To be able to program a lifting line model for application to an horizontal axis wind turbine... </p>
-        <ul>
-          <li>... in steady, uniform, axial flow.</li>
-          <li>... implementing corrections for heavily loaded streamtubes.</li>
-          <li>... implementing corrections for finite number of blades in a finite tip speed ratio.</li>
-        </ul>
-      </section>
-
-
-      <section> <h2>Nomenclature</h2>
-        <ul>
-          <li>$\alpha$    angle of attack at blade element $\left( \right)$.</li>
-          <li>$\beta$    blade twist angle at blade element $\left( \right)$.</li>
-          <li>$ \rho $ fluid density $\left( kg.m^{-3} \right)$.</li>
-          <li>$\Gamma$    circulation at blade element $\left( m^2 s^{-1} \right)$.</li>
-          <li>$\Phi$    perceived-wind inflow-angle at blade element $\left( \right)$.</li>
-          <li>$ \Omega $ rotor rotational velocity $\left(rad.s^{-1} \right)$.</li>
-          <li>$ a $  axial induction factor $\left( \right)$.  </li>
-          <li>$ a' $  azimuthal induction factor $\left( \right)$.  </li>
-          <li>$ c $ blade element chord $\left( m \right)$.</li>
-          <li>$ C_d $ drag coefficient $\left(  \right)$.</li>
-          <li>$ C_l $ lift coefficient $\left(  \right)$.</li>
-          <li>$ C_T $ thrust coefficient $\left(  \right)$.</li>
-          <li>$ Drag $ drag force per unit span $\left( N/m \right)$.</li>
-          <li>$ Lift $  lift force per unit span $\left( N/m \right)$.</li>
-          <li>$ F_{azim} $  azimuthal/tangential force per unit span $\left( N/m \right)$.</li>
-          <li>$ F_{axial} $  axial force per unit span $\left( N/m \right)$.</li>
-          <li>$ N_{blades} $  number of blades $\left( \right)$.</li>
-          <li>$ V_{axial} = U_{rotor}$ axial velocity perceived by  blade element, axial velocity at rotor $\left( m/s \right).$</li>
-          <li>$ V_{p}$  velocity perceived by  blade element $\left( m/s \right)$.</li>
-          <li>$ V_{tan} $ azimuthal/tangential velocity perceived by  blade element $\left( m/s \right)$.</li>
-        </ul>
-      </section>
+    <section> <h2>Learning objectives</h2>
+      <p align="left"> To be able to program a lifting line model for application to an horizontal axis wind turbine... </p>
+      <ul>
+        <li>... in steady, uniform, axial flow.</li>
+        <li>... using a blade element approach.</li>
+        <li>... witha a frozen wake geometry.</li>
+      </ul>
+    </section>
 
 
-      <section> <h2>The principle of BEM is to balance loads between streamtube and blade element, at each annulus.</h2>
-        <div style="width: 50%; float:left">
-          <p> BEM segments the blades into blade elements, to calculate 2D loads in each element.</p>
-          <p> The circular region swept by the blade elements at a given radial position defines an annulus.</p>
-          <p> Actuator disk momentum theory is applied at each annulus to determine induction as a function of the loading on the blade segements.</p>
-          <p> BEM uses an iterative approach: </p>
-          <ul>
-            <li>the induction calculated from momentum theory is used to calculate the blade element loads with blade element theory.</li>
-            <li>the blade element loads from blade element theory is use to calculate the induction with momentum theory.</li>
-          </ul>
-          <p> The figure on our right shows the equivalent actuator disk that represents the area swept by the blades; in detail, the annulus swept by the blade elements.</p>
-        </div>
-        <div style="width: 50%; float:left">
-          <img src="images/annulifinal.svg" height="100%">
-        </div>
+    <section> <h2>Nomenclature</h2>
+      <ul>
+        <li>$\alpha$    angle of attack at blade element $\left( \right)$.</li>
+        <li>$\beta$    blade twist angle at blade element $\left( \right)$.</li>
+        <li>$ \rho $ fluid density $\left( kg.m^{-3} \right)$.</li>
+        <li>$\Gamma$    circulation at blade element $\left( m^2 s^{-1} \right)$.</li>
+        <li>$\Phi$    perceived-wind inflow-angle at blade element $\left( \right)$.</li>
+        <li>$ \Omega $ rotor rotational velocity $\left(rad.s^{-1} \right)$.</li>
+        <li>$ a $  axial induction factor $\left( \right)$.  </li>
+        <li>$ a' $  azimuthal induction factor $\left( \right)$.  </li>
+        <li>$ c $ blade element chord $\left( m \right)$.</li>
+        <li>$ C_d $ drag coefficient $\left(  \right)$.</li>
+        <li>$ C_l $ lift coefficient $\left(  \right)$.</li>
+        <li>$ C_T $ thrust coefficient $\left(  \right)$.</li>
+        <li>$ Drag $ drag force per unit span $\left( N/m \right)$.</li>
+        <li>$ Lift $  lift force per unit span $\left( N/m \right)$.</li>
+        <li>$ F_{azim} $  azimuthal/tangential force per unit span $\left( N/m \right)$.</li>
+        <li>$ F_{axial} $  axial force per unit span $\left( N/m \right)$.</li>
+        <li>$ N_{blades} $  number of blades $\left( \right)$.</li>
+        <li>$ V_{axial} = U_{rotor}$ axial velocity perceived by  blade element, axial velocity at rotor $\left( m/s \right).$</li>
+        <li>$ V_{p}$  velocity perceived by  blade element $\left( m/s \right)$.</li>
+        <li>$ V_{tan} $ azimuthal/tangential velocity perceived by  blade element $\left( m/s \right)$.</li>
+      </ul>
+    </section>
 
-      </section>
-
-
-      <section>
-
-
+    <section>
       <section> <h2>Velocity induced by a straight vortex filament</h2>
         <div  style="width: 60%; float:left " >
 
-        <p> Change values below to change the direction and magnitude of the vortex filament.
-          Change the location of the point to evaluate the induced velocity $X_p$.</p>
-        <!-- <div align="center"> -->
+          <p> Change values below to change the direction and magnitude of the vortex filament.
+            Change the location of the point to evaluate the induced velocity $X_p$.</p>
+            <!-- <div align="center"> -->
 
-        <form >
-          <p>Circulation $\Gamma :$ <input type="text" id="Gamma"  value="1.0" size="4"> </p>
-          <p>
-            $X_1 = $  $x_1:$ <input type="text" id="x1"  value="0.0" size="4">
-              $y_1:$<input type="text" id="y1"  value="0.0" size="4">
-              $z_1:$<input type="text" id="z1"  value="0.0" size="4">
-          </p>
-          <p>
-            $X_2 = $  $x_2:$ <input type="text" id="x2"  value="0.0" size="4">
-              $y_2:$<input type="text" id="y2"  value="0.0" size="4">
-              $z_2:$<input type="text" id="z2"  value="1" size="4">
-          </p>
-          <p>
-            $X_p = $  $x_p:$ <input type="text" id="xp"  value="0.0" size="4">
-              $y_p:$<input type="text" id="yp"  value="0.5" size="4">
-              $z_p:$<input type="text" id="zp"  value="0.5" size="4">
-          </p>
-          <p> <input type="button" value="Calculate" onclick="Calculate_velocityinducedatXp()"> </p>
+            <form >
+              <p>Circulation $\Gamma :$ <input type="text" id="Gamma"  value="1.0" size="4"> </p>
+              <p>
+                $X_1 = $  $x_1:$ <input type="text" id="x1"  value="0.0" size="4">
+                $y_1:$<input type="text" id="y1"  value="0.0" size="4">
+                $z_1:$<input type="text" id="z1"  value="0.0" size="4">
+              </p>
+              <p>
+                $X_2 = $  $x_2:$ <input type="text" id="x2"  value="0.0" size="4">
+                $y_2:$<input type="text" id="y2"  value="0.0" size="4">
+                $z_2:$<input type="text" id="z2"  value="1" size="4">
+              </p>
+              <p>
+                $X_p = $  $x_p:$ <input type="text" id="xp"  value="0.0" size="4">
+                $y_p:$<input type="text" id="yp"  value="0.5" size="4">
+                $z_p:$<input type="text" id="zp"  value="0.5" size="4">
+              </p>
+              <p> <input type="button" value="Calculate" onclick="Calculate_velocityinducedatXp()"> </p>
 
-          <p><span  id="message_velocityinducedatXp" >  </span>  </p>
-        </form>
-      </div>
+              <p><span  id="message_velocityinducedatXp" >  </span>  </p>
+            </form>
+          </div>
 
-        <script type="text/javascript">
-          function Calculate_velocityinducedatXp() {
+          <script type="text/javascript">
+            function Calculate_velocityinducedatXp() {
             var x1 = parseFloat(document.getElementById("x1").value);
             var y1 = parseFloat(document.getElementById("y1").value);
             var z1 = parseFloat(document.getElementById("z1").value);
@@ -234,86 +200,80 @@ document.getElementsByTagName( 'head' )[0].appendChild( link );
             console.log([x1, y1, z1]);
             var veloc = velocity_3D_from_vortex_filament(Gamma,[x1, y1, z1], [x2,  y2, z2], [xp, yp, zp], 0.00001);
             document.getElementById("message_velocityinducedatXp").innerHTML = "The velocity at point Xp is u:" + veloc[0].toFixed(3) +
-              " v:" + veloc[1].toFixed(3) + " w:" + veloc[2].toFixed(3) ;
+            " v:" + veloc[1].toFixed(3) + " w:" + veloc[2].toFixed(3) ;
 
           }
-        </script>
-        <div  style="width: 40%; float:left ">
-          <img width="90%" src="images/velocityinducedvortexsegment.svg"   >
-        </div>
-        <div style="width: 100%; float:left ">
-          <p class="bottomcall">
-            Press bottom arrow for algorithm to calculate the velocity induced by a straight vortex filament.
-          </p>
-        </div>
+          </script>
+          <div  style="width: 40%; float:left ">
+            <img width="90%" src="images/velocityinducedvortexsegment.svg"   >
+          </div>
+          <div style="width: 100%; float:left ">
+            <p class="bottomcall">
+              Press bottom arrow for algorithm to calculate the velocity induced by a straight vortex filament.
+            </p>
+          </div>
 
 
       </section>
 
+        <section> <h2 >Algorithm for velocity induced by vortex filament</h2>
+          <p>Consider a vortex filament from point $X_1$ to point $X_2$, with strength $\Gamma$. The velocity at a point $X_p$ can be calculated by the algorithm below. </p>
+          <div  style="width: 50%; float:left ">
+            <img width="60%" src="images/velocityinducedvortexsegment.svg"   >
+          </div>
+          <div  style="width: 50%; float:left ">
+            <p  style="font-size:65%">$R_1= \sqrt{ (X_P-X_1)^2 + (Y_P-Y_1)^2 + (Z_P-Z_1)^2}   $</p>
+            <p  style="font-size:65%">$R_2= \sqrt{ (X_P-X_2)^2 + (Y_P-Y_2)^2 + (Z_P-Z_2)^2}   $</p>
+            <p  style="font-size:65%">$ {R_{1-2}}_X=(Y_P-Y_1)(Z_P-Z_2)-(Z_P-Z_1)(Y_P-Y_2)    $</p>
+            <p  style="font-size:65%">$ {R_{1-2}}_Y=-(X_P-X_1)*(Z_P-Z_2)+(Z_P-Z_1)*(X_P-X_2)    $</p>
+            <p  style="font-size:65%">$ {R_{1-2}}_Z=(X_P-X_1)*(Y_P-Y_2)-(Y_P-Y_1)*(X_P-X_2)    $</p>
+            <p  style="font-size:65%">$ {R_{1-2}}_{sqr}={{R_{1-2}}_X}^2 + {{R_{1-2}}_Y}^2 + {{R_{1-2}}_Z}^2   $</p>
+            <p  style="font-size:65%">$ R_{0-1} = (X_2-X_1)(X_P-X_1)+(Y_2-Y_1)(Y_P-Y_1)+(Z_2-Z_1)(Z_P-Z_1)    $</p>
+            <p  style="font-size:65%">$ R_{0-2} = (X_2-X_1)(X_P-X_2)+(Y_2-Y_1)(Y_P-Y_2)+(Z_2-Z_1)(Z_P-Z_2)    $</p>
+            <p  style="font-size:65%">$ K=\frac{\Gamma}{4 \pi {R_{1-2}}_{sqr}} \left( \frac{R_{0-1}}{R_1}-    \frac{R_{0-2}}{R_2}  \right)      $</p>
+            <p  style="font-size:65%">$ U=K*{R_{1-2}}_X $  ; $ V=K*{R_{1-2}}_Y $ ;  $ W=K*{R_{1-2}}_Z $ </p>
+          </div>
+          <div  style="width: 90%; float:left ">
+            <p style="font-size:75%"> <i> Source: Katz, Joseph, and Allen Plotkin. <b>Low-speed aerodynamics.</b>  Vol. 13. Cambridge university press, 2001. </i> </p>
+            <p class="bottomcall">
+              Press bottom arrow for example of code implementation of this algorithm.
+            </p>
+          </div>
+        </section>
 
+        <section> <h2>Code for calculation of velocity induced by a straight vortex filament </h2>
 
-      <section> <h2 >Algorithm for velocity induced by vortex filament</h2>
-        <p>Consider a vortex filament from point $X_1$ to point $X_2$, with strength $\Gamma$. The velocity at a point $X_p$ can be calculated by the algorithm below. </p>
-        <div  style="width: 50%; float:left ">
-          <img width="60%" src="images/velocityinducedvortexsegment.svg"   >
-        </div>
-        <div  style="width: 50%; float:left ">
+          <div align="center" >
+            <pre>
+              <code class="javascript">
 
-          <p  style="font-size:65%">$R_1= \sqrt{ (X_P-X_1)^2 + (Y_P-Y_1)^2 + (Z_P-Z_1)^2}   $</p>
-          <p  style="font-size:65%">$R_2= \sqrt{ (X_P-X_2)^2 + (Y_P-Y_2)^2 + (Z_P-Z_2)^2}   $</p>
-          <p  style="font-size:65%">$ {R_{1-2}}_X=(Y_P-Y_1)(Z_P-Z_2)-(Z_P-Z_1)(Y_P-Y_2)    $</p>
-          <p  style="font-size:65%">$ {R_{1-2}}_Y=-(X_P-X_1)*(Z_P-Z_2)+(Z_P-Z_1)*(X_P-X_2)    $</p>
-          <p  style="font-size:65%">$ {R_{1-2}}_Z=(X_P-X_1)*(Y_P-Y_2)-(Y_P-Y_1)*(X_P-X_2)    $</p>
-          <p  style="font-size:65%">$ {R_{1-2}}_{sqr}={{R_{1-2}}_X}^2 + {{R_{1-2}}_Y}^2 + {{R_{1-2}}_Z}^2   $</p>
-          <p  style="font-size:65%">$ R_{0-1} = (X_2-X_1)(X_P-X_1)+(Y_2-Y_1)(Y_P-Y_1)+(Z_2-Z_1)(Z_P-Z_1)    $</p>
-          <p  style="font-size:65%">$ R_{0-2} = (X_2-X_1)(X_P-X_2)+(Y_2-Y_1)(Y_P-Y_2)+(Z_2-Z_1)(Z_P-Z_2)    $</p>
-          <p  style="font-size:65%">$ K=\frac{\Gamma}{4 \pi {R_{1-2}}_{sqr}} \left( \frac{R_{0-1}}{R_1}-    \frac{R_{0-2}}{R_2}  \right)      $</p>
-          <p  style="font-size:65%">$ U=K*{R_{1-2}}_X $  ; $ V=K*{R_{1-2}}_Y $ ;  $ W=K*{R_{1-2}}_Z $ </p>
+                // 3D velocity induced by a vortex filament
+                function velocity_3D_from_vortex_filament(GAMMA,XV1, XV2, XVP1,CORE){
+                  // function to calculate the velocity induced by a straight 3D vortex filament
+                  // with circulation GAMMA at a point VP1. The geometry of the vortex filament
+                  // is defined by its edges: the filaments start at XV1 and ends at XV2.
+                  // the input CORE defines a vortex core radius, inside which the velocity
+                  // is defined  as a solid body rotation.
+                  // The function is adapted from the algorithm presented in:
+                  //                Katz, Joseph, and Allen Plotkin. Low-speed aerodynamics.
+                  //                Vol. 13. Cambridge university press, 2001.
 
-        </div>
-        <div  style="width: 90%; float:left ">
-          <p style="font-size:75%"> <i> Source: Katz, Joseph, and Allen Plotkin. <b>Low-speed aerodynamics.</b>  Vol. 13. Cambridge university press, 2001. </i> </p>
-          <p class="bottomcall">
-            Press bottom arrow for example of code implementation of this algorithm.
-          </p>
-        </div>
-
-
-      </section>
-
-      <section> <h2>Code for calculation of velocity induced by a straight vortex filament </h2>
-
-        <div align="center" >
-          <pre>
-            <code class="javascript">
-
-              // 3D velocity induced by a vortex filament
-              function velocity_3D_from_vortex_filament(GAMMA,XV1, XV2, XVP1,CORE){
-                // function to calculate the velocity induced by a straight 3D vortex filament
-                // with circulation GAMMA at a point VP1. The geometry of the vortex filament
-                // is defined by its edges: the filaments start at XV1 and ends at XV2.
-                // the input CORE defines a vortex core radius, inside which the velocity
-                // is defined  as a solid body rotation.
-                // The function is adapted from the algorithm presented in:
-                //                Katz, Joseph, and Allen Plotkin. Low-speed aerodynamics.
-                //                Vol. 13. Cambridge university press, 2001.
-
-                // read coordinates that define the vortex filament
-                var X1 =XV1[0]; var Y1 =XV1[1]; var Z1 =XV1[2]; // start point of vortex filament
-                var X2 =XV2[0]; var Y2 =XV2[1]; var Z2 =XV2[2]; // end point of vortex filament
-                // read coordinates of target point where the velocity is calculated
-                var XP =XVP1[0]; var YP =XVP1[1]; var ZP =XVP1[2];
-                // calculate geometric relations for integral of the velocity induced by filament
-                var R1=Math.sqrt(Math.pow((XP-X1), 2) + Math.pow((YP-Y1), 2) + Math.pow((ZP-Z1), 2) );
-                var R2=Math.sqrt( Math.pow((XP-X2), 2) + Math.pow((YP-Y2), 2) + Math.pow((ZP-Z2), 2) );
-                var R1XR2_X=(YP-Y1)*(ZP-Z2)-(ZP-Z1)*(YP-Y2);
-                var R1XR2_Y=-(XP-X1)*(ZP-Z2)+(ZP-Z1)*(XP-X2);
-                var R1XR2_Z=(XP-X1)*(YP-Y2)-(YP-Y1)*(XP-X2);
-                var R1XR_SQR=Math.pow(R1XR2_X, 2)+ Math.pow(R1XR2_Y, 2)+ Math.pow(R1XR2_Z, 2);
-                var R0R1 = (X2-X1)*(XP-X1)+(Y2-Y1)*(YP-Y1)+(Z2-Z1)*(ZP-Z1);
-                var R0R2 = (X2-X1)*(XP-X2)+(Y2-Y1)*(YP-Y2)+(Z2-Z1)*(ZP-Z2);
-                // check if target point is in the vortex filament core,
-                // and modify to solid body rotation
+                  // read coordinates that define the vortex filament
+                  var X1 =XV1[0]; var Y1 =XV1[1]; var Z1 =XV1[2]; // start point of vortex filament
+                  var X2 =XV2[0]; var Y2 =XV2[1]; var Z2 =XV2[2]; // end point of vortex filament
+                  // read coordinates of target point where the velocity is calculated
+                  var XP =XVP1[0]; var YP =XVP1[1]; var ZP =XVP1[2];
+                  // calculate geometric relations for integral of the velocity induced by filament
+                  var R1=Math.sqrt(Math.pow((XP-X1), 2) + Math.pow((YP-Y1), 2) + Math.pow((ZP-Z1), 2) );
+                  var R2=Math.sqrt( Math.pow((XP-X2), 2) + Math.pow((YP-Y2), 2) + Math.pow((ZP-Z2), 2) );
+                  var R1XR2_X=(YP-Y1)*(ZP-Z2)-(ZP-Z1)*(YP-Y2);
+                  var R1XR2_Y=-(XP-X1)*(ZP-Z2)+(ZP-Z1)*(XP-X2);
+                  var R1XR2_Z=(XP-X1)*(YP-Y2)-(YP-Y1)*(XP-X2);
+                  var R1XR_SQR=Math.pow(R1XR2_X, 2)+ Math.pow(R1XR2_Y, 2)+ Math.pow(R1XR2_Z, 2);
+                  var R0R1 = (X2-X1)*(XP-X1)+(Y2-Y1)*(YP-Y1)+(Z2-Z1)*(ZP-Z1);
+                  var R0R2 = (X2-X1)*(XP-X2)+(Y2-Y1)*(YP-Y2)+(Z2-Z1)*(ZP-Z2);
+                  // check if target point is in the vortex filament core,
+                  // and modify to solid body rotation
                   if (R1XR_SQR < Math.pow(CORE,2)) {
                     R1XR_SQR=Math.pow(CORE,2);
                     // GAMMA = 0;
@@ -326,172 +286,295 @@ document.getElementsByTagName( 'head' )[0].appendChild( link );
                     R2=CORE;
                     // GAMMA = 0;
                   };
-                // determine scalar
-                var K=GAMMA/4/Math.PI/R1XR_SQR*(R0R1/R1 -R0R2/R2 );
-                // determine the three velocity components
-                var U=K*R1XR2_X;
-                var V=K*R1XR2_Y;
-                var W=K*R1XR2_Z;
-                // output results, vector with the three velocity components
-                var results = [U, V, W];
-                return(results) };
-            </code>
-          </pre>
-        </div>
-
+                  // determine scalar
+                  var K=GAMMA/4/Math.PI/R1XR_SQR*(R0R1/R1 -R0R2/R2 );
+                  // determine the three velocity components
+                  var U=K*R1XR2_X;
+                  var V=K*R1XR2_Y;
+                  var W=K*R1XR2_Z;
+                  // output results, vector with the three velocity components
+                  var results = [U, V, W];
+                  return(results) };
+                </code>
+              </pre>
+            </div>
+        </section>
 
 
       </section>
 
+<section>
 
+  <section> <h2> Discretization and grid generation</h2>
+    <p > The blade is segmented in spanwise direction. A horseshoe vortex is colocated at each blade segment.
+      The bound vortex is located at the quarter-chord position. At the blade, vortex segments trail the chord up to 1/4 chord, and then convect with flow velocity.
+     </p>
+    <div  style="width: 100%; float:left ">
+      <img width="60%" src="images\horseshoevortexinwingsection.svg"   >
+    </div>
+    <div  style="width: 90%; float:left ">
+      <p class="bottomcall">
+        Press bottom arrow for further information on "Discretization and grid generation".
+      </p>
+    </div>
+  </section>
+
+    <section> <h2> Discretization of each horseshoe</h2>
+      <p > Each horseshoe is discretized in straight vortex filaments. The blade elements is discretized by three filaments: one bound at the quarter-chord line, two trailing in chord direction.
+        According to Helmholtz theorem, the circulation $\Gamma$ is constant for all filaments that compose the horseshoe. The direction of the filament defines the direction of the circulation.
+       </p>
+      <div  style="width: 100%; float:left ">
+        <img width="60%" src="images\discretehorseshoevortexinwingsection.svg"   >
+      </div>
+      <div  style="width: 90%; float:left ">
+        <p class="bottomcall">
+          Press bottom arrow for further information on "Discretization and grid generation".
+        </p>
+      </div>
     </section>
 
+  <section> <h2>Spanwise discretization</h2>
+    <p > Two common strategies for spanwise discretization: uniform distribution and uniform cosine distribution.
+     </p>
+    <div  style="width: 50%; float:left ">
+      <img width="100%" src="images\uniformedistributionbladesections.svg"   >
+    </div>
+    <div  style="width: 50%; float:left ">
+      <img width="100%" src="images\cosinedistributionbladesections.svg"   >
+    </div>
+    <div  style="width: 50%; float:left ">
+      <p > <i>Uniform distribution:</i>  segments are equally distant. Provides a solution with faster convergence.
+       </p>
+    </div>
+    <div  style="width: 50%; float:left ">
+      <p > <i>Uniform cosine distribution:</i>  segments are define at the cosine of a uniform angle distribution. Provides a solution with higher accuracy at the root and tip, where circulation gradients are higher.
+       </p>
+    </div>
+    <div  style="width: 90%; float:left ">
+      <p class="bottomcall">
+        Press bottom arrow for further information on "Discretization and grid generation".
+      </p>
+    </div>
+  </section>
+
+</section>
+
+<section>
+
+
+    <section>
+
+        <h2>Example of Lifiting Line solution of bound circulation and comparison with BEM solution. </h2>
+        <div  style="width: 100%; float:left "; >
+          <p style ='text-align: center'>  Scroll the button below to change tip speed ratio. <span id="message_calculate_circulation_BEM1"> Tip speed ratio = 6. </span> </p>
+          <input type="range" oninput="solveplotCirculation(this.value)">
+
+        </div>
+        <div id="chart_calculate_circulation_Lift_BEM1" style="width: 600px; height: 400px; float: left"; ><!-- Plotly chart will be drawn inside this DIV --></div>
+
+        <div  style="width: 300px; height:400px;  float: left"; >
+          <p align="left">    $~~~~C_T$= <span id="message_calculate_circulation_BEM1_CTrotor" > 0 </span> </p>
+          <p align="left">    $~~~~C_{Protor}$= <span  id="message_calculate_circulation_BEM1_CProtor" > 0 </span> </p>
+          <!-- <p>Suggestion: compare $\Gamma$ and $C_T$. Derive the relation.</p> -->
+
+        </div>
+
+        <div  style="width: 100%; float:left ">
+
+          <p>  Note: $F_{axial}$ and $F_{azim}$ are non-dimensioned by $\frac{1}{2} \rho U_\infty^2 R$  </p>
+
+        </div>
+
+        <script>
+
+
+        function solveplotCirculation(val) {
+
+          var TSR = 4+val/100*4;
+          document.getElementById("message_calculate_circulation_BEM1").innerHTML = "Tip speed ratio = " +TSR.toFixed(2);
+          var s_Array = createArraySequence(0.,Math.PI/12, Math.PI);
+          var r_Array=[];
+          for (var i = 0; i < s_Array.length; i++) {
+            r_Array.push(-1*(math.cos(s_Array[i])-1)/2*0.8+0.2); // discretization for BEM model
+          }
+
+          for (var i = 0; i < s_Array.length; i++) {
+            s_Array[i]= (-1*(math.cos(s_Array[i])-1)/2*0.8+0.2)*(50);
+          }
+          var maxradius = math.max(s_Array);
+          var theta_Array = createArraySequence(0.,Math.PI/10, 100*Math.PI);
+          var rotor_wake_system = create_rotor_geometry(s_Array, maxradius, TSR/(1-0.2), 1, theta_Array,3);
+          var resultsLL = solve_lifting_line_system_matrix_approach(rotor_wake_system, [1, 0, 0], TSR/50, maxradius);
 
 
 
+          var results = solveBEMmodel(1, r_Array, TSR*0.02 , 50, 3);
+          var adim = Math.PI/(3*TSR/50);
+
+          plotGamma2(results.r_R, nondim(results.Gamma, adim),  'BEM' , results.r_R, nondim(resultsLL.Gamma, adim),  'LiftLine' , "chart_calculate_circulation_Lift_BEM1")
+          // plotGamma2(results.r_R, nondim(results.a, 0.5),  'BEM' , results.r_R, nondim(resultsLL.a, 0.5),  'LiftLine' , "chart_calculate_circulation_BEM1")
+
+          var results2 = calculateCT_CProtor_CPflow(results.a,results.aline,results.Fnorm, results.Ftan, 1, r_Array, TSR*0.02 , 50, 3);
+          // console.log(resultsLL.Ftan);
+          // console.log(results.aline);
+          // console.log(resultsLL.aline);
+          // var atemp=[]; var alinetemp=[]; var Fnormtemp=[]; var Ftantemp=[];
+          // for (var i = 0; i < r_Array.length-1; i++) {
+          //   atemp.push(resultsLL.a);
+          // }
+          var CTCPliftline = calculateCT_CProtor_CPflow(resultsLL.a,resultsLL.aline,resultsLL.Fnorm, resultsLL.Ftan, 1, r_Array, TSR*0.02 , 50, 3);
+          document.getElementById("message_calculate_circulation_BEM1_CTrotor").innerHTML =  results2.CTrotor.toFixed(2) + " " + CTCPliftline.CTrotor.toFixed(2);
+          document.getElementById("message_calculate_circulation_BEM1_CProtor").innerHTML =  results2.CProtor.toFixed(2) + " " + CTCPliftline.CProtor.toFixed(2);
+          // document.getElementById("message_calculate_faxial_ftan_1_CPflow").innerHTML =  results2.CPflow.toFixed(4);
 
 
+        }
+
+        solveplotCirculation(50)
+        </script>
+
+  </section>
 
 
+  <section>
 
-
-
-
-
-
-
-
-              <section>
-
-                <!-- <script type="text/javascript">
-
-                  var GAMMA =2*Math.PI;
-                  var  XV1 =[ 0, 0, -1000000000 ];
-                  var  XV2 =[ 0, 0, 1000000];
-                  var  XVP =[ 0, 1, 0];
-                  var CORE = 0.00001;
-                  var v3d=velocity_3D_from_vortex_filament(GAMMA,XV1, XV2, XVP,CORE);
-
-                  var s_Array = createArraySequence(0.,Math.PI/50, Math.PI);
-
-                  for (var i = 0; i < s_Array.length; i++) {
-                    s_Array[i]= math.cos(s_Array[i])*(-5);
-                  }
-
-
-                  // s_Array = createArraySequence(0.,1,100);
-
-
-                  var rotor_wake_system = create_straight_wing_geometry(s_Array);
-                  var result =solve_lifting_line_system_direct(rotor_wake_system,[1,0,0.1]);
-
-                </script>
- -->
-
-
-
-                <h2>Example of BEM solution of bound circulation $\Gamma$. </h2>
-                <div  style="width: 100%; float:left "; >
-                <p style ='text-align: center'>  Scroll the button below to change tip speed ratio. <span id="message_calculate_circulation_BEM1"> Tip speed ratio = 6. </span> </p>
-                <input type="range" oninput="solveplotCirculation(this.value)">
-
-                </div>
-                <div id="chart_calculate_circulation_BEM1" style="width: 600px; height: 400px; float: left"; ><!-- Plotly chart will be drawn inside this DIV --></div>
-
-                <div  style="width: 300px; height:400px;  float: left"; >
-                    <p align="left">    $~~~~C_T$= <span id="message_calculate_circulation_BEM1_CTrotor" > 0 </span> </p>
-                    <p align="left">    $~~~~C_{Protor}$= <span  id="message_calculate_circulation_BEM1_CProtor" > 0 </span> </p>
-                    <p>Suggestion: compare $\Gamma$ and $C_T$. Derive the relation.</p>
-
-                </div>
-
-                <div  style="width: 100%; float:left ">
-
-                  <p>  Note: The circulation $\Gamma$ is non-dimensioned by $\frac{ U_\infty^2 }{N_{Blades} \pi \Omega}$  </p>
-
-                </div>
-
-                <script>
-
-
-                function solveplotCirculation(val) {
-
-                  var TSR = 4+val/100*4;
-                  document.getElementById("message_calculate_circulation_BEM1").innerHTML = "Tip speed ratio = " +TSR.toFixed(2);
-                  var r_Array = createArraySequence(0.2,0.01,1);
-                  var results = solveBEMmodel(1, r_Array, TSR*0.02 , 50, 3);
-                  var adim = Math.PI/(3*TSR/50);
-
-                  plotGamma(results.r_R, nondim(results.Gamma, adim),  '' , "chart_calculate_circulation_BEM1")
-
-                  var results2 = calculateCT_CProtor_CPflow(results.a,results.aline,results.Fnorm, results.Ftan, 1, r_Array, TSR*0.02 , 50, 3);
-                  document.getElementById("message_calculate_circulation_BEM1_CTrotor").innerHTML =  results2.CTrotor.toFixed(2);
-                  document.getElementById("message_calculate_circulation_BEM1_CProtor").innerHTML =  results2.CProtor.toFixed(4);
-                  // document.getElementById("message_calculate_faxial_ftan_1_CPflow").innerHTML =  results2.CPflow.toFixed(4);
-
-
-
-
-
-                }
-
-                solveplotCirculation(50)
-                </script>
-
-              </section>
-
-  
-        </section>
-
-        <section> <h2> Review of tutorial</h2>
-
-          <h3>Learning objectives</h3>
-            <p align="left"> To be able to program a BEM code for application to an horizontal axis wind turbine... </p>
-            <ul>
-              <li>... in steady, uniform, axial flow.</li>
-              <li>... implementing corrections for heavily loaded streamtubes.</li>
-              <li>... implementing corrections for finite number of blades in a finite tip speed ratio.</li>
-            </ul>
-            <p>  </p>
-
-            <h3>Suggestions</h3>
-              <p align="left"> Use the simulation tools to compare the relations between the two terms of induction, loading, circulation, and tip speed ratio. </p>
-              <p align="left"> Derive the relations between the two terms of induction, loading, circulation, and tip speed ratio. </p>
-
-        </section>
+      <h2>Example of Lifiting Line solution of loads and comparison with BEM solution. </h2>
+      <div  style="width: 100%; float:left "; >
+        <p style ='text-align: center'>  Scroll the button below to change tip speed ratio. <span id="message_calculate_circulation_BEM1"> Tip speed ratio = 6. </span> </p>
+        <input type="range" oninput="solveplotCirculation(this.value)">
 
       </div>
-    </div>
+      <div id="chart_calculate_loads_Lift_BEM1" style="width: 600px; height: 400px; float: left"; ><!-- Plotly chart will be drawn inside this DIV --></div>
 
-    <script src="lib/js/head.min.js"></script>
-    <script src="js/reveal.js"></script>
+      <div  style="width: 300px; height:400px;  float: left"; >
+        <p align="left">    $~~~~C_T$= <span id="message_calculate_circulation_BEM1_CTrotor" > 0 </span> </p>
+        <p align="left">    $~~~~C_{Protor}$= <span  id="message_calculate_circulation_BEM1_CProtor" > 0 </span> </p>
+        <!-- <p>Suggestion: compare $\Gamma$ and $C_T$. Derive the relation.</p> -->
 
-    <script>
-    Reveal.initialize({
-      history: true,
+      </div>
 
-      math: {
-        // mathjax: 'https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML',
-        // config: 'TeX-MML-AM_CHTML'
-        // 'TeX-AMS_HTML-full'
-      },
+      <div  style="width: 100%; float:left ">
 
-      dependencies: [
-        // { src: 'plugin/math/math.js', async: true }
-        // ,
-        {  src: 'plugin/mathsvg/math.js', async: true},
-        // { src: '/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
-      ]
-    });
+        <p>  Note: The circulation $\Gamma$ is non-dimensioned by $\frac{ U_\infty^2 }{N_{Blades} \pi \Omega}$  </p>
 
-    // Shows the slide number using default formatting
-    Reveal.configure({ slideNumber: true });
-    // Slide number formatting can be configured using these variables:
-    //  "h.v":  horizontal . vertical slide number (default)
-    //  "h/v":  horizontal / vertical slide number
-    //    "c":  flattened slide number
-    //  "c/t":  flattened slide number / total slides
-    </script>
+      </div>
 
-  </body>
-  </html>
+      <script>
+
+
+      function solveplotCirculation2(val) {
+
+        var TSR = 4+val/100*4;
+        document.getElementById("message_calculate_circulation_BEM1").innerHTML = "Tip speed ratio = " +TSR.toFixed(2);
+        var s_Array = createArraySequence(0.,Math.PI/12, Math.PI);
+        var r_Array=[];
+        for (var i = 0; i < s_Array.length; i++) {
+          r_Array.push(-1*(math.cos(s_Array[i])-1)/2*0.8+0.2); // discretization for BEM model
+        }
+
+        for (var i = 0; i < s_Array.length; i++) {
+          s_Array[i]= (-1*(math.cos(s_Array[i])-1)/2*0.8+0.2)*(50);
+        }
+        var maxradius = math.max(s_Array);
+        var theta_Array = createArraySequence(0.,Math.PI/10, 100*Math.PI);
+        var rotor_wake_system = create_rotor_geometry(s_Array, maxradius, TSR/(1-0.2), 1, theta_Array,3);
+        var resultsLL = solve_lifting_line_system_matrix_approach(rotor_wake_system, [1, 0, 0], TSR/50, maxradius);
+
+
+
+        var results = solveBEMmodel(1, r_Array, TSR*0.02 , 50, 3);
+        var adim = Math.PI/(3*TSR/50);
+
+        plotGamma2(results.r_R, nondim(results.Gamma, adim),  'BEM' , results.r_R, nondim(resultsLL.Gamma, adim),  'LiftLine' , "chart_calculate_circulation_BEM1")
+        // plotGamma2(results.r_R, nondim(results.a, 0.5),  'BEM' , results.r_R, nondim(resultsLL.a, 0.5),  'LiftLine' , "chart_calculate_circulation_BEM1")
+
+        var results2 = calculateCT_CProtor_CPflow(results.a,results.aline,results.Fnorm, results.Ftan, 1, r_Array, TSR*0.02 , 50, 3);
+        // console.log(resultsLL.Ftan);
+        // console.log(results.aline);
+        // console.log(resultsLL.aline);
+        // var atemp=[]; var alinetemp=[]; var Fnormtemp=[]; var Ftantemp=[];
+        // for (var i = 0; i < r_Array.length-1; i++) {
+        //   atemp.push(resultsLL.a);
+        // }
+        var CTCPliftline = calculateCT_CProtor_CPflow(resultsLL.a,resultsLL.aline,resultsLL.Fnorm, resultsLL.Ftan, 1, r_Array, TSR*0.02 , 50, 3);
+        document.getElementById("message_calculate_circulation_BEM1_CTrotor").innerHTML =  results2.CTrotor.toFixed(2) + " " + CTCPliftline.CTrotor.toFixed(2);
+        document.getElementById("message_calculate_circulation_BEM1_CProtor").innerHTML =  results2.CProtor.toFixed(2) + " " + CTCPliftline.CProtor.toFixed(2);
+        // document.getElementById("message_calculate_faxial_ftan_1_CPflow").innerHTML =  results2.CPflow.toFixed(4);
+
+
+      }
+
+      solveplotCirculation2(50)
+      </script>
+
+</section>
+
+
+
+
+</section>
+
+<section> <h2> Review of tutorial</h2>
+
+  <h3>Learning objectives</h3>
+  <p align="left"> To be able to program a BEM code for application to an horizontal axis wind turbine... </p>
+  <ul>
+    <li>... in steady, uniform, axial flow.</li>
+    <li>... implementing corrections for heavily loaded streamtubes.</li>
+    <li>... implementing corrections for finite number of blades in a finite tip speed ratio.</li>
+  </ul>
+  <p>  </p>
+
+  <h3>Suggestions</h3>
+  <p align="left"> Use the simulation tools to compare the relations between the two terms of induction, loading, circulation, and tip speed ratio. </p>
+  <p align="left"> Derive the relations between the two terms of induction, loading, circulation, and tip speed ratio. </p>
+
+</section>
+
+</div>
+</div>
+
+<script src="lib/js/head.min.js"></script>
+<script src="js/reveal.js"></script>
+
+<script>
+Reveal.initialize({
+  history: true,
+
+  math: {
+    // mathjax: 'https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML',
+    // config: 'TeX-MML-AM_CHTML'
+    // 'TeX-AMS_HTML-full'
+  },
+
+  dependencies: [
+    // { src: 'plugin/math/math.js', async: true }
+    // ,
+    {  src: 'plugin/mathsvg/math.js', async: true},
+    // { src: '/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+  ]
+});
+render();
+// Shows the slide number using default formatting
+Reveal.configure({ slideNumber: true });
+// Slide number formatting can be configured using these variables:
+//  "h.v":  horizontal . vertical slide number (default)
+//  "h/v":  horizontal / vertical slide number
+//    "c":  flattened slide number
+//  "c/t":  flattened slide number / total slides
+Reveal.addEventListener( 'slidechanged', function( event ) {
+  cancelAnimationFrame(pointerAnimationrequest);
+  // cancelAnimationFrame(pointerAnimationrequest)+2;
+  // cancelAnimationFrame(pointerAnimationrequest+1);
+  var idslide=Reveal.getCurrentSlide().id;
+  if (idslide=="Coverslide") {
+    render();
+    // console.log(" id is  " + Reveal.getCurrentSlide().id);
+  };
+
+
+} );
+</script>
+
+</body>
+</html>

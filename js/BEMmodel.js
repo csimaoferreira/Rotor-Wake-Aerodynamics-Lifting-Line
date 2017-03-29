@@ -135,10 +135,10 @@ function calculateCT_CProtor_CPflow(a,aline,Fnorm,Ftan, Uinf, r_Rarray, Omega, R
   var temp
   var Utan =0
   var Unorm =0;
-  for (var i = 0; i < (a.length); i++) {
+  for (var i = 0; i < (r_Rarray.length-1); i++) {
+    r_R_temp = (r_Rarray[i]+r_Rarray[i+1])/2;
     Utan = r_R_temp*Radius*Omega*aline[i];
     Unorm = Uinf*(1-a[i]);
-    r_R_temp = (r_Rarray[i]+r_Rarray[i+1])/2;
     drtemp = (-r_Rarray[i]+r_Rarray[i+1]);
     CTrotor+=(drtemp*Fnorm[i]*NBlades)/(0.5*Uinf*Uinf*Math.PI*Radius);
     CProtor+=(drtemp*Ftan[i]*r_R_temp*Omega*NBlades)/(0.5*Uinf*Uinf*Uinf*Math.PI);
@@ -211,7 +211,7 @@ function solveStreamtube(Uinf, r1_R, r2_R, rootradius_R, tipradius_R , Omega, Ra
   var Niterations =100; // maximum number of iterations
   var Erroriterations =0.00001; // error limit for iteration rpocess, in absolute value of induction
   for (var i = 0; i < Niterations; i++) {
- 
+
     ///////////////////////////////////////////////////////////////////////
     // this is the block "Calculate velocity and loads at blade element"
     ///////////////////////////////////////////////////////////////////////
