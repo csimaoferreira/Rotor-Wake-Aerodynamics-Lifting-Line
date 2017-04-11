@@ -57,10 +57,11 @@ function induction_from_thrust_coefficient_Gluert_correction(CT) {
 function createArraySequence(valuestart,deltavalue,valueend){
   var data = [];
   var temp = valuestart;
-  while (temp <= valueend) {
+  while (temp <= (valueend-deltavalue)) {
     data.push(temp);
     temp =temp+deltavalue;
   }
+  data.push(valueend)
   return data;                // Function returns data
 };
 
@@ -106,10 +107,18 @@ function loadBladeElement(Vnorm, Vtan, r_R){
   var twist = temp[1];
   // console.log('twist ' + twist)
   var alpha = twist + InflowAngle*180/Math.PI;
+
   // console.log('alpha ' + alpha)
   temp = polarAirfoil(alpha);
   var cl = temp[0];
   var cd = 0*temp[1];
+  // if (r_R>0.5) {
+  //   if (r_R<0.5) {
+  //     console.log("alpha " + alpha);
+  //     console.log("cl " + cl);
+  //   }
+  //
+  // }
   // console.log('cl and cd ' + cl +' ' +cd)
   var Lift = 0.5*Vmag2*cl*chord;
   var Drag = 0.5*Vmag2*cd*chord;

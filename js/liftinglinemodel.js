@@ -1,20 +1,96 @@
+function solvepBEMLiftingLine(TSR,NELEMENTS, Nrotations) {
+  // Nrotations=0.12
+  // document.getElementById("message_calculate_circulation_BEM1").innerHTML = "Tip speed ratio = " +TSR.toFixed(2);
+  var s_Array = createArraySequence(0.,(Math.PI)/NELEMENTS, Math.PI);
+  // console.log(s_Array);
+  // console.log(s_Array[1]+s_Array[s_Array.length-1]);
+  var r_Array=[];
+  for (var i = 0; i < s_Array.length; i++) {
+    r_Array.push(-1*(math.cos(s_Array[i])-1)/2*0.8+0.2); // discretization for BEM model
+  }
 
-function create_straight_wing_geometry(span_array){
+  for (var i = 0; i < s_Array.length; i++) {
+    s_Array[i]= (-1*(math.cos(s_Array[i])-1)/2*0.8+0.2)*(50);
+  }
+  var maxradius = math.max(s_Array);
+  // console.log(Nrotations);
+  var theta_Array = createArraySequence(0.,Math.PI/10, Nrotations*2*Math.PI);
+  var rotor_wake_system = create_rotor_geometry(s_Array, maxradius, TSR/(1-0.2), 1, theta_Array,3);
+  // maketestplot(900, 400, rotor_wake_system,'WebGL-output')
+  // console.log("LIFTING LINE");
+  // console.log("LIFTING LINE");
+  // console.log("LIFTING LINE");
+  // console.log("LIFTING LINE");
+  var resultsLL = solve_lifting_line_system_matrix_approach(rotor_wake_system, [1, 0, 0], TSR/50, maxradius);
+  // console.log("BEM");
+  // console.log("BEM");
+  // console.log("BEM");
+  // console.log("BEM");
+  // console.log("BEM");
+  // console.log("BEM");
+  // console.log("BEM");
+  // console.log("BEM");
+  // console.log("BEM");
+  var results = solveBEMmodel(1, r_Array, TSR*0.02 , 50, 3);
+  var adim = Math.PI/(3*TSR/50);
+
+  var results2 = calculateCT_CProtor_CPflow(results.a,results.aline,results.Fnorm, results.Ftan, 1, r_Array, TSR*0.02 , 50, 3);
+  var CTCPliftline = calculateCT_CProtor_CPflow(resultsLL.a,resultsLL.aline,resultsLL.Fnorm, resultsLL.Ftan, 1, r_Array, TSR*0.02 , 50, 3);
+  return({BEM: results , BEMloads: results2, LiftLine: resultsLL, LiftLineloads: CTCPliftline, rotor_wake_system: rotor_wake_system})
+
+  // plotGamma2(results.r_R, nondim(results.Gamma, adim),  'BEM' , results.r_R, nondim(resultsLL.Gamma, adim),  'LiftLine' , "chart_calculate_circulation_Lift_BEM1")
+  // document.getElementById("message_calc_circulation_BEM1_CTrotor").innerHTML =  results2.CTrotor.toFixed(2);
+  // document.getElementById("message_calc_circulation_BEM1_CProtor").innerHTML =  results2.CProtor.toFixed(2);
+  // document.getElementById("message_calc_circulation_LiftLine1_CTrotor").innerHTML =  CTCPliftline.CTrotor.toFixed(2);
+  // document.getElementById("message_calc_circulation_LiftLine1_CProtor").innerHTML =  CTCPliftline.CProtor.toFixed(2);
+}
+
+
+
+
+function solvewingLiftingLine(Nelements,AspectRatio,Alpha) {
+  var s_Array = createArraySequence(0.,(Math.PI)/Nelements, Math.PI);
+
+  for (var i = 0; i < s_Array.length; i++) {
+    s_Array[i]= (-1*(math.cos(s_Array[i])-1)/2)*(AspectRatio);
+  }
+  var WakeLength= 1000*AspectRatio;
+  var rotor_wake_system = create_straight_wing_geometry(s_Array, Alpha, WakeLength);
+
+  var results = solve_wing_lifting_line_system_matrix_approach(rotor_wake_system, Alpha);
+
+  return({Cl: results[0], span: results[1], rotor_wake_system: rotor_wake_system})
+
+}
+
+
+
+
+
+
+
+
+
+function create_straight_wing_geometry(span_array, Alpha, WakeLength){
   var temp1
   var temp2
   var filaments = [];
   var ring = [];
-  var infinity =10000000000000;
+  var infinity =WakeLength;
   var controlpoints = [];
 
 
   for (var i = 0; i < span_array.length-1; i++) {
     controlpoints.push( {coordinates: [ 0 , (span_array[i]+span_array[i+1])/2   , 0 ] , chord: 1, normal: [ 0,  0, 1] , tangential: [1, 0, 0]   } );
-    temp1= {x1: infinity , y1:span_array[i], z1:0, x2:0 , y2:span_array[i], z2:0, Gamma: 0  }   ;
+    temp1= {x1: infinity , y1:span_array[i], z1: infinity*Math.sin(Alpha*Math.PI/180), x2: 1.25 , y2:span_array[i], z2:0, Gamma: 0  }   ;
+    filaments.push(temp1);
+    temp1= {x1: 1.25 , y1:span_array[i], z1:0, x2:0 , y2:span_array[i], z2:0, Gamma: 0  }   ;
     filaments.push(temp1);
     temp1= {x1:0 , y1:span_array[i], z1:0, x2:0 , y2:span_array[i+1], z2:0, Gamma: 0  }   ;
     filaments.push(temp1);
-    temp1= {x1:0 , y1:span_array[i+1], z1:0, x2:infinity , y2:span_array[i+1], z2:0, Gamma: 0  }   ;
+    temp1= {x1:0 , y1:span_array[i+1], z1:0, x2:1.25 , y2:span_array[i+1], z2:0, Gamma: 0  }   ;
+    filaments.push(temp1);
+    temp1= {x1:1.25 , y1:span_array[i+1], z1:0, x2:infinity , y2:span_array[i+1], z2:infinity*Math.sin(Alpha*Math.PI/180), Gamma: 0  }   ;
     filaments.push(temp1);
     ring.push({filaments: filaments});
     filaments = [];
@@ -389,6 +465,88 @@ function velocity_3D_from_vortex_filament(GAMMA,XV1, XV2, XVP1,CORE){
 
 
 
+
+
+
+  function solve_wing_lifting_line_system_matrix_approach(rotor_wake_system, Alpha){
+    var controlpoints = rotor_wake_system.controlpoints;
+    var rings = rotor_wake_system.rings;
+    // initialize variabless
+    var velocity_induced =[];
+    var up = []; var vp = []; var wp = [];
+    var u = 0;  var v = 0;  var w = 0;
+    var alpha1, cl1, vmag1;
+    var GammaNew=[];
+    var ClNew=[];
+    var rNew=[];
+    var Gamma=[]; for (var i = 0; i < controlpoints.length; i++) { GammaNew.push(0);};
+    for (var i = 0; i < controlpoints.length; i++) { ClNew.push(0);};
+    for (var i = 0; i < controlpoints.length; i++) { rNew.push(controlpoints[i].coordinates[1]);};
+    var Niterations = 340;
+    var MatrixU = [];
+    var MatrixV = [];
+    var MatrixW = [];
+    var errorlimit = 0.01;
+    var error = 1.0; var refererror;
+    var ConvWeight =0.1;
+
+    // initalize and calculate matrix
+    for (var icp= 0; icp < controlpoints.length; icp++) {
+      for (var jring = 0; jring < rings.length; jring++) {
+        rings[jring] = update_Gamma_sinle_ring(rings[jring],1,1);
+        velocity_induced = velocity_induced_single_ring(rings[jring], controlpoints[icp].coordinates);
+        up.push(velocity_induced[0]*1);
+        vp.push(velocity_induced[1]*1);
+        wp.push(velocity_induced[2]*1);
+        velocity_induced =[];
+      };
+        MatrixU.push(up);
+        MatrixV.push(vp);
+        MatrixW.push(wp);
+        up =[]; vp =[]; wp =[];
+    };
+
+    for (var  kiter = 0; kiter < Niterations; kiter++) {
+      Gamma=[];
+      for (var ig = 0; ig < GammaNew.length; ig++) {
+        Gamma.push(GammaNew[ig]);
+      }
+      for (var icp= 0; icp < controlpoints.length; icp++) {
+        u=0; v=0; w=0;
+        for (var jring = 0; jring < rings.length; jring++) {
+          u = u + MatrixU[icp][jring]*Gamma[jring];
+          v= v + MatrixV[icp][jring]*Gamma[jring];
+          w= w + MatrixW[icp][jring]*Gamma[jring];
+        };
+        // calculate total perceived velocity
+
+        vel1 = [1  + u ,  v , 1*Math.sin(Alpha*Math.PI/180)+ w ]; // total perceived velocity at section
+        angle1= Math.atan(vel1[2]/vel1[0]);
+        ClNew[icp]=2*Math.PI*Math.sin(angle1);
+        vmag = Math.sqrt(math.dot(vel1 , vel1));
+        GammaNew[icp] = 0.5*1*vmag*ClNew[icp];
+
+      }; // end loop control points
+      refererror =math.max(math.abs(GammaNew));
+      refererror =Math.max(refererror,0.001);
+      // var errorold = error;
+      error =math.max(math.abs(math.subtract(GammaNew, Gamma)));
+      // console.log("error absolute " + error);
+      error= error/refererror;
+      ConvWeight = Math.max((1-error)*0.3,0.1);
+
+      if (error<errorlimit) {
+        kiter=Niterations;
+      }
+
+
+      for (var ig = 0; ig < GammaNew.length; ig++) {
+        GammaNew[ig] = (1-ConvWeight)*Gamma[ig] + ConvWeight*GammaNew[ig];
+      }
+    }; // end iteration loop
+
+    return [ClNew, rNew];
+  };
 
 
 

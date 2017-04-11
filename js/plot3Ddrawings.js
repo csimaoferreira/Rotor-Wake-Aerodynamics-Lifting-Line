@@ -1,45 +1,28 @@
 
 
 
-var camera, controls, scene, renderer;
+var scene1, renderer1, camera1;
+var scene2, renderer2, camera2;
+
 var rotation_velocity = 2*3.14/5;
 var pointerAnimationrequest;
 
 // once everything is loaded, we run our Three.js stuff.
-function maketestplot(width,height) {
+function maketestplot(width,height, CurrentdomElement) {
+  // width=20;
+  // height=20;
+
     // create a scene, that will hold all our elements such as objects, cameras and lights.
-    scene = new THREE.Scene();
+    var scene = new THREE.Scene();
+
     // create a camera, which defines where we're looking at.
-    camera = new THREE.PerspectiveCamera(25, width / height, 0.3, 100000);
+    var camera = new THREE.PerspectiveCamera(25, width / height, 0.3, 100000);
     // console.log(window);
     // create a render and set the size
-    renderer = new THREE.WebGLRenderer();
+    var renderer = new THREE.WebGLRenderer();
     renderer.setClearColor(new THREE.Color(0xFFFFFF));
     renderer.setSize(width, height);
 
-    var s_Array = createArraySequence(0.,Math.PI/10, Math.PI);
-    for (var i = 0; i < s_Array.length; i++) {
-      s_Array[i]= (-1*(math.cos(s_Array[i])-1)/2*0.8+0.2)*(50);
-    }
-    var maxradius = math.max(s_Array);
-    var theta_Array = createArraySequence(0.,Math.PI/20, 50*Math.PI);
-    var rotor_wake_system = create_rotor_geometry(s_Array, maxradius, 6, 1, theta_Array,3);
-    rings = rotor_wake_system.rings;
-
-
-
-
-    var rotor = createRotor(rotor_wake_system.bladepanels);
-
-    var wake= new createWakeMesh(rings);
-    // scene.add(wake);
-
-    var rotorwake = new THREE.Object3D();
-    rotorwake.name = 'RotorWake';
-    rotorwake.add(wake);
-    rotorwake.add(rotor);
-
-    scene.add(rotorwake);
 
     // position and point the camera to the center of the scene
     var csl=0.09;
@@ -50,12 +33,16 @@ function maketestplot(width,height) {
     camera.position.x = -100;
     camera.position.y = 10;
     camera.position.z = 300;
-    scene.position.x= 50;
+    scene.position.x= 100;
+
+    // camera.position.x = 0;
+    // camera.position.y = 0;
+
 
     camera.lookAt(scene.position);
 
     // add the output of the renderer to the html element
-    $("#WebGL-output").append(renderer.domElement);
+    $("#"+CurrentdomElement).append(renderer.domElement);
 
     // controls = new THREE.OrbitControls( camera, renderer.domElement );
     // controls.addEventListener( 'change', render );
@@ -63,7 +50,37 @@ function maketestplot(width,height) {
 
     // render the scene
     renderer.render(scene, camera);
+    // console.log(scene);
+    return [scene, camera, renderer]
+    // return scene
 };
+
+
+function addscene(rotor_wake_system, scene){
+  // create a scene, that will hold all our elements such as objects, cameras and lights.
+  scene=null;
+  scene = new THREE.Scene();
+  rings = rotor_wake_system.rings;
+
+
+
+
+  var rotor = createRotor(rotor_wake_system.bladepanels);
+
+  var wake= new createWakeMesh(rings);
+  // scene.add(wake);
+
+  var rotorwake = new THREE.Object3D();
+  rotorwake.name = 'RotorWake';
+  rotorwake.add(wake);
+  rotorwake.add(rotor);
+
+  scene.add(rotorwake);
+  return scene;
+
+};
+
+
 
 function render() {
   var d = new Date();
@@ -72,7 +89,9 @@ function render() {
   // var rotation = rotation_velocity*time;
 
   rotation = rotation % (2*Math.PI);
-  var RotorWake = scene.getObjectByName( "RotorWake", true );
+  var RotorWake = scene1.getObjectByName( "RotorWake", true );
+  // console.log(scene);
+  // console.log(RotorWake);
   RotorWake.rotation.x=rotation;
 
   // var idslide=Reveal.getCurrentSlide().id;
@@ -87,7 +106,7 @@ function render() {
   // };
 
 
-  renderer.render( scene, camera );
+  renderer1.render( scene1, camera1 );
   // controls.update();
 
   // console.log("rotation is " + rotation);
