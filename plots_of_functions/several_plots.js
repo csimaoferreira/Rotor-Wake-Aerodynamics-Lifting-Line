@@ -272,7 +272,7 @@ function plotGamma2(inputx1, inputy1, name1, inputx2, inputy2, name2, IDDIV) {
 
   var layout = {
     // title: '$ \\rm{Thrust~coefficient~} C_T \\rm{~as~a~function~of~induction~factor~} a $',
-    xaxis: {title: 'r/R',
+    xaxis: {title: "r/R",
     dtick: 0.1,
     range: [0., 1.0],
     autorange: false
@@ -289,6 +289,56 @@ Plotly.newPlot(IDDIV, data, layout);
 };
 
 
+function plotFourlines(inputx1, inputy1, name1, inputx2, inputy2, name2, inputx3, inputy3, name3, inputx4, inputy4, name4, IDDIV, AXISDATA) {
+/////////////////////////////////////////////////////
+  var trace1 = {
+    x: inputx1,
+    y: inputy1,
+    mode: 'line',
+    name: name1
+  };
+
+  var trace2 = {
+    x: inputx2,
+    y: inputy2,
+    mode: 'line',
+    name: name2
+  };
+
+  var trace3 = {
+    x: inputx3,
+    y: inputy3,
+    mode: 'line',
+    name: name3
+  };
+
+  var trace4 = {
+    x: inputx4,
+    y: inputy4,
+    mode: 'line',
+    name: name4
+  };
+
+
+  var data = [trace1, trace2, trace3, trace4];
+
+  var layout = {
+    // title: '$ \\rm{Thrust~coefficient~} C_T \\rm{~as~a~function~of~induction~factor~} a $',
+    xaxis: {title: "r/R",
+    dtick: AXISDATA[2],
+    range: [AXISDATA[0], AXISDATA[1]],
+    autorange: false
+  },
+  yaxis: {
+    title: "",
+    range: [AXISDATA[3], AXISDATA[4]],
+    dtick: AXISDATA[5],
+    autorange: false
+  }
+};
+
+Plotly.newPlot(IDDIV, data, layout);
+};
 
 
 
@@ -304,7 +354,7 @@ function plot_Prandtl_correction(IDDIV){
 // console.log(a)
 
   for (var i = 0; i < a.length; i++) {
-    temp=calculatePrandtlTipRootCorrection(a[i], 0.01, 1, 6, 3, 0.1);
+    temp=calculatePrandtlTipRootCorrection(a[i], 0.01, 1, 7, 2, 0.1);
     FX.push(temp.Ftotal);
   };
   //  console.log(temp)
@@ -373,6 +423,45 @@ function plot_Prandtl_correction2(IDDIV){
     title: "Prandtl's correction factor",
     range: [0., 2.0],
     dtick: 0.2,
+    autorange: false
+  }
+};
+
+Plotly.newPlot(IDDIV, data, layout);
+};
+
+
+
+function plotOneline(inputx, inputy1, name1,xlabel, IDDIV) {
+
+
+  var trace1 = {
+    x: inputx,
+    y: inputy1,
+    mode: 'line',
+    name: name1
+  };
+
+  // var trace2 = {
+  //   x: inputx,
+  //   y: inputy2,
+  //   mode: 'line',
+  //   name: name2
+  // };
+
+  var data = [trace1];
+
+  var layout = {
+    // title: '$ \\rm{Thrust~coefficient~} C_T \\rm{~as~a~function~of~induction~factor~} a $',
+    xaxis: {title: xlabel,
+    dtick: 0.1,
+    range: [0., 1.0],
+    autorange: false
+  },
+  yaxis: {
+    title: name1,
+    range: [0., 0.55],
+    dtick: .05,
     autorange: false
   }
 };
