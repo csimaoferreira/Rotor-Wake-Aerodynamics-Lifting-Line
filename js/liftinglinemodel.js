@@ -221,32 +221,66 @@ function create_rotor_geometry(span_array, radius, tipspeedratio, Uinf, theta_ar
 
 
 function solve_lifting_line_system_matrix_approach(rotor_wake_system,wind, Omega, rotorradius) {
+// this codes solves a lifting line model of a horizontal axis rotor
+// as inputs, it takes
+//      rotor_wake_system: data strucure that contains the geometry of the horseshoe vortex rings,
+//                         and the control points at the blade
+//      wind: unperturbed wind velocity, also known as U_infinity
+//      Omega: rotational velocity of the rotor
+//      rotorradius: the radius of the rotor
+
+  // get controlpoints data structure
   var controlpoints = rotor_wake_system.controlpoints;
+  // get horseshoe vortex rings data structure
   var rings = rotor_wake_system.rings;
-  // initialize variabless
-  var velocity_induced =[];
-  var up = []; var vp = []; var wp = [];
-  var u = 0;  var v = 0;  var w = 0;
-  var radialposition; var azimdir;
-  var alpha;
-  var GammaNew=[];
-  var Gamma=[]; for (var i = 0; i < controlpoints.length; i++) { GammaNew.push(0);};
-  var vel1; var vmag; var vaxial; var vazim; var temploads;
-  var Niterations = 140;
-  var MatrixU = [];
-  var MatrixV = [];
-  var MatrixW = [];
+  //
+  // initialize variables that we will use during the calculation
+  var velocity_induced =[]; // velocity induced by a horse vortex ring at a control point
+  var up = []; var vp = []; var wp = []; // components of the velocity induced by one horseshoe vortex ring
+  var u = 0;  var v = 0;  var w = 0; // total velocity induced at one control point
+  var radialposition; var azimdir; // radial position of the control point
+  var alpha; // angle of attack
+  var GammaNew=[]; // new estimate of bound circulation
+  var Gamma=[]; // current solution of bound circulation
+  for (var i = 0; i < controlpoints.length; i++) { GammaNew.push(0);}; // initialize as zeros
+  var vel1; var vmag; var vaxial; var vazim; var temploads; // velocities and loads at controlpoint
+  var MatrixU = []; // matrix of induction, for velocity component in x-direction
+  var MatrixV = []; // matrix of induction, for velocity component in y-direction
+  var MatrixW = []; // matrix of induction, for velocity component in z-direction
+  // initialize matrices with zeros
+  var MatrixU2 = []; // matrix of induction, for velocity component in x-direction
+  var MatrixV2 = []; // matrix of induction, for velocity component in y-direction
+  var MatrixW2 = []; // matrix of induction, for velocity component in z-direction
+  var temp = [];
+  for (var jring = 0; jring < rings.length; jring++) {temp.push(0)};
+  for (var icp= 0; icp < controlpoints.length; icp++) {
+      MatrixU2.push(temp);
+      MatrixV2.push(temp);
+      MatrixW2.push(temp);
+  };
+  // the variables below are to setup the maximum number of iterations and convergence criteria
   var Niterations =1200;
   var errorlimit = 0.01;
   var error = 1.0; var refererror;
   var ConvWeight =0.1;
 
-  // initalize and calculate matrix
+  // initalize and calculate matrices for velocity induced by horseshoe vortex rings
+  // two "for cicles", each line varying wind controlpoint "icp", each column varying with
+  // horseshoe vortex ring "jring"
   for (var icp= 0; icp < controlpoints.length; icp++) {
     for (var jring = 0; jring < rings.length; jring++) {
+
       rings[jring] = update_Gamma_sinle_ring(rings[jring],1,1);
       velocity_induced = velocity_induced_single_ring(rings[jring], controlpoints[icp].coordinates);
+      // MatrixU2[icp][jring] =  (velocity_induced[0]*1.0);
+      MatrixV2[icp][jring] = velocity_induced[1]*1;
+      MatrixW2[icp][jring] = velocity_induced[2]*1;
+      MatrixU2[icp][jring] = icp*1000 + jring;
+
+
+
       up.push(velocity_induced[0]*1);
+
       vp.push(velocity_induced[1]*1);
       wp.push(velocity_induced[2]*1);
       velocity_induced =[];
@@ -257,6 +291,10 @@ function solve_lifting_line_system_matrix_approach(rotor_wake_system,wind, Omega
       up =[]; vp =[]; wp =[];
   };
 
+
+console.log(MatrixU2);
+console.log(MatrixU[0][0]);
+console.log(MatrixU2[0][0]);
   for (var  kiter = 0; kiter < Niterations; kiter++) {
     Gamma=[];
     for (var ig = 0; ig < GammaNew.length; ig++) {
