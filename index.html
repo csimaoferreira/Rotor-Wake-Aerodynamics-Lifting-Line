@@ -153,30 +153,42 @@ document.getElementsByTagName( 'head' )[0].appendChild( link );
       </section>
 
 
-      <section> <h2>Nomenclature</h2>
-        <ul>
-          <li>$\alpha$    angle of attack at blade element $\left( \right)$.</li>
-          <li>$\beta$    blade twist angle at blade element $\left( \right)$.</li>
-          <li>$ \rho $ fluid density $\left( kg.m^{-3} \right)$.</li>
-          <li>$\Gamma$    circulation at blade element $\left( m^2 s^{-1} \right)$.</li>
-          <li>$\Phi$    perceived-wind inflow-angle at blade element $\left( \right)$.</li>
-          <li>$ \Omega $ rotor rotational velocity $\left(rad.s^{-1} \right)$.</li>
-          <li>$ a $  axial induction factor $\left( \right)$.  </li>
-          <li>$ a' $  azimuthal induction factor $\left( \right)$.  </li>
-          <li>$ c $ blade element chord $\left( m \right)$.</li>
-          <li>$ C_d $ drag coefficient $\left(  \right)$.</li>
-          <li>$ C_l $ lift coefficient $\left(  \right)$.</li>
-          <li>$ C_T $ thrust coefficient $\left(  \right)$.</li>
-          <li>$ Drag $ drag force per unit span $\left( N/m \right)$.</li>
-          <li>$ Lift $  lift force per unit span $\left( N/m \right)$.</li>
-          <li>$ F_{azim} $  azimuthal/tangential force per unit span $\left( N/m \right)$.</li>
-          <li>$ F_{axial} $  axial force per unit span $\left( N/m \right)$.</li>
-          <li>$ N_{blades} $  number of blades $\left( \right)$.</li>
-          <li>$ V_{axial} = U_{rotor}$ axial velocity perceived by  blade element, axial velocity at rotor $\left( m/s \right).$</li>
-          <li>$ V_{p}$  velocity perceived by  blade element $\left( m/s \right)$.</li>
-          <li>$ V_{tan} $ azimuthal/tangential velocity perceived by  blade element $\left( m/s \right)$.</li>
-        </ul>
-      </section>
+          <section> <h2>Nomenclature</h2>
+            <div>
+              <ul style="height: 500px ; overflow: auto">
+                <li>$\alpha$    angle of attack at blade element $\left( \right)$.</li>
+                <li>$\beta$    blade twist angle at blade element $\left( \right)$.</li>
+                <li>$ \rho $ fluid density $\left( kg.m^{-3} \right)$.</li>
+                <li>$\Gamma$    circulation at blade element $\left( m^2 s^{-1} \right)$.</li>
+                <li>$\Phi$    perceived-wind inflow-angle at blade element $\left( \right)$.</li>
+                <li>$ \Omega $ rotor rotational velocity $\left(rad.s^{-1} \right)$.</li>
+                <li>$ \vec{\omega} $ infinitesimal vorticy element $\left(rad.s^{-1} \right)$.</li>
+                <li>$ a $  axial induction factor $\left( \right)$.  </li>
+                <li>$ a' $  azimuthal induction factor $\left( \right)$.  </li>
+                <li>$ c $ blade element chord $\left( m \right)$.</li>
+                <li>$ C_d $ drag coefficient $\left(  \right)$.</li>
+                <li>$ C_l $ lift coefficient $\left(  \right)$.</li>
+                <li>$ C_T $ thrust coefficient $\left(  \right)$.</li>
+                <li>$ Drag $ drag force per unit span $\left( N/m \right)$.</li>
+                <li>$ Lift $  lift force per unit span $\left( N/m \right)$.</li>
+                <li>$ F_{azim} $  azimuthal/tangential force per unit span $\left( N/m \right)$.</li>
+                <li>$ F_{axial} $  axial force per unit span $\left( N/m \right)$.</li>
+                <li>$ l $ circulation length element $\left( l \right)$.</li>
+                <li>$ N_{blades} $  number of blades $\left( \right)$.</li>
+                <li>$ \vec{r} $ vector between vorticity element and target point $\left( m \right)$.</li>
+                <li>$ \vec{u_{\omega}} $ velocity induced by vorticity $\left( m/s \right).$</li>
+                <li>$ V $ volume of vorticity $\left( m^3 \right)$.</li>
+                <li>$ V_{axial} = U_{rotor}$ axial velocity perceived by  blade element, axial velocity at rotor $\left( m/s \right).$</li>
+                <li>$ V_{p}$  velocity perceived by  blade element $\left( m/s \right)$.</li>
+                <li>$ V_{tan} $ azimuthal/tangential velocity perceived by  blade element $\left( m/s \right)$.</li>
+                <li>$ \vec{X_p} $ point were velocity is evaluated $\left( m \right)$.</li>
+              </ul>
+
+            </div>
+          </section>
+
+
+
 
       <section> <h2>Concept of the lifting line model</h2>
         <p>The lifting line model allows us to calculate the loads on a blade and the flow field in any point in space. </p>
@@ -511,480 +523,772 @@ document.getElementsByTagName( 'head' )[0].appendChild( link );
 
                   </section>  <!-- section on "Discretization and grid generation" -->
 
-
-
-
-
                   <section>
 
 
-                    <section>
+                    <section> <h2>Setting matrices for induced velocity by vortex system </h2>
+                      <p>Potential flow allows for a linear solution of the velocity field. Therefore, we can define a linear system to calculate the velocity induced by all horseshoe vortex rings at all control points.</p>
+                      <p>Consider that we have a total of $N$ blade sections with $N$  controlpoints, releasing $N$ horseshoe vortex rings.
+                        We define $i_{cp}$ as the index of a control point at a blade element, and $j_{ring}$ as the index of the vortex ring. </p>
+                        <p>We now define the velocity "induced" by a horseshoevortex ring $j_{ring}$ at point $i_{cp}$ as $\vec{u}_{i_{cp}-j_{ring}}$</p>
+                        <p>The three velocity components of $\vec{u}_{i_{cp}-j_{ring}}$ in $x$, $y$ and $z$-direction are $u_{i_{cp}-j_{ring}}$,
+                          $v_{i_{cp}-j_{ring}}$ and $w_{i_{cp}-j_{ring}}$</p>
+                          <p>Because the velocity induced by a vortex is linear with the strenght of the vortex,
+                            $\vec{u}_{i_{cp}-j_{ring}} = \vec{u}_{i_{cp}-j_{ring}|_{\Gamma=1}}*\Gamma_{j_{ring}}$, where $\vec{u}_{i_{cp}-j_{ring}|_{\Gamma=1}}$ is the velocity induced by a horseshoe vortex of unit strength.  </p>
+                            <p>The total velocity by all horseshoe vortices at one controlpoint $\vec{u}_{i_{cp}}$ is given by
+                              \[ \vec{u}_{i_{cp}}=\sum_{j_{ring}=1}^N \vec{u}_{i_{cp}-j_{ring}} =\sum_{j_{ring}=1}^N \vec{u}_{i_{cp}-j_{ring}|_{\Gamma=1}}*\Gamma_{j_{ring}}   \]</p>
 
-                      <h2>Example of Lifiting Line solution of bound circulation and comparison with BEM solution. </h2>
-                      <div  style="width: 100%; float:left "; >
-                        <p style ='text-align: center'>  Scroll the button below to change tip speed ratio. <span id="message_calculate_circulation_BEM1"> Tip speed ratio = 6. </span> </p>
-                        <input type="range" onchange="solveplotCirculation(this.value)">
+                              <p class="bottomcall">
+                                Press bottom arrow to see reminaing formulation .
+                              </p>
+                            </section>
 
-                      </div>
-                      <div id="chart_calculate_circulation_Lift_BEM1" style="width: 600px; height: 400px; float: left"; ><!-- Plotly chart will be drawn inside this DIV --></div>
+                            <section> <h2>Vector formulation of velocity components induced at one controlpoint by N horseshoe vortex rings</h2>
+                              <p style ='text-align: left'>
+                              \[ {u}_{i_{cp}} = \left[ {\begin{array}{*{20}{c}}
+                              {u}_{i_{cp}-1|_{\Gamma=1}} & \cdots & {u}_{i_{cp}-N|_{\Gamma=1}}
+                              \end{array}} \right] \cdot \left[ {\begin{array}{*{20}{c}}
+                              \Gamma_1 \\
+                               \vdots \\
+                              \Gamma_N
+                              \end{array}} \right]\]
 
-                      <div  style="width: 300px; height:400px;  float: left"; >
-                        <p>Rotor performance:</p>
-                        <table>
-                          <tr>
-                            <th> </th>
-                            <th>BEM</th>
-                            <th>Lifting Line</th>
-                          </tr>
-                          <tr>
-                            <td>$C_T$</td>
-                            <td>  <span id="message_calc_circulation_BEM1_CTrotor" > 0 </span> </td>
-                            <td>  <span id="message_calc_circulation_LiftLine1_CTrotor" > 0 </span> </td>
-                          </tr>
-                          <tr>
-                            <td>$C_P$</td>
-                            <td>  <span id="message_calc_circulation_BEM1_CProtor" > 0 </span> </td>
-                            <td>  <span id="message_calc_circulation_LiftLine1_CProtor" > 0 </span> </td>
-                          </tr>
-                        </table>
+                              \[ {v}_{i_{cp}} = \left[ {\begin{array}{*{20}{c}}
+                              {v}_{i_{cp}-1|_{\Gamma=1}} & \cdots & {v}_{i_{cp}-N|_{\Gamma=1}}
+                              \end{array}} \right] \cdot \left[ {\begin{array}{*{20}{c}}
+                              \Gamma_1 \\
+                               \vdots \\
+                              \Gamma_N
+                              \end{array}} \right]\]
 
-                      </div>
+                              \[ {w}_{i_{cp}} = \left[ {\begin{array}{*{20}{c}}
+                              {w}_{i_{cp}-1|_{\Gamma=1}} & \cdots & {w}_{i_{cp}-N|_{\Gamma=1}}
+                              \end{array}} \right] \cdot \left[ {\begin{array}{*{20}{c}}
+                              \Gamma_1 \\
+                               \vdots \\
+                              \Gamma_N
+                              \end{array}} \right]\]
+                              </p>
+                              <p class="bottomcall">
+                                Press bottom arrow to see matrix formulation .
+                              </p>
+                            </section>
 
-                      <div  style="width: 100%; float:left ">
-                        <p>  Note: The circulation $\Gamma$ is non-dimensioned by $\frac{ U_\infty^2 }{N_{Blades} \pi \Omega}$  </p>
-                        <p class="bottomcall">
-                          Press bottom arrow to see other examples.
-                        </p>
-                      </div>
-
-
-
-                      <script>
-
-                      function solveplotCirculation(val) {
-                        var TSR = 4+val/100*4;
-                        document.getElementById("message_calculate_circulation_BEM1").innerHTML = "Tip speed ratio = " +TSR.toFixed(2);
-                        var solution = solvepBEMLiftingLine(TSR,12,50);
-                        var adim = Math.PI/(3*TSR/50);
-
-
-                        plotGamma2(solution.BEM.r_R, nondim(solution.BEM.Gamma, adim),  'BEM' , solution.BEM.r_R, nondim(solution.LiftLine.Gamma, adim),  'LiftLine' , 'chart_calculate_circulation_Lift_BEM1')
-                        document.getElementById("message_calc_circulation_BEM1_CTrotor").innerHTML =  solution.BEMloads.CTrotor.toFixed(2);
-                        document.getElementById("message_calc_circulation_BEM1_CProtor").innerHTML =  solution.BEMloads.CProtor.toFixed(2);
-                        document.getElementById("message_calc_circulation_LiftLine1_CTrotor").innerHTML =  solution.LiftLineloads.CTrotor.toFixed(2);
-                        document.getElementById("message_calc_circulation_LiftLine1_CProtor").innerHTML =  solution.LiftLineloads.CProtor.toFixed(2);
-                      }
-                      solveplotCirculation(50)
-                      </script>
-
-                    </section>
-
-
-                    <section>
-
-                      <h2>Example of Lifiting Line solution of $F_{axial}$ and $F_{azim}$, and comparison with BEM solution. </h2>
-                      <div  style="width: 100%; float:left "; >
-                        <p style ='text-align: center'>  Scroll the button below to change tip speed ratio. <span id="message_calculate_circulation_BEM2"> Tip speed ratio = 6. </span> </p>
-                        <input type="range" onchange="solveplotCirculation2(this.value)">
-
-                      </div>
-                      <div id="chart_calculate_circulation_Lift_BEM2" style="width: 600px; height: 400px; float: left"; ><!-- Plotly chart will be drawn inside this DIV --></div>
-
-                      <div  style="width: 300px; height:400px;  float: left"; >
-                        <p>Rotor performance:</p>
-                        <table>
-                          <tr>
-                            <th> </th>
-                            <th>BEM</th>
-                            <th>Lifting Line</th>
-                          </tr>
-                          <tr>
-                            <td>$C_T$</td>
-                            <td>  <span id="message_calc_circulation_BEM2_CTrotor" > 0 </span> </td>
-                            <td>  <span id="message_calc_circulation_LiftLine2_CTrotor" > 0 </span> </td>
-                          </tr>
-                          <tr>
-                            <td>$C_P$</td>
-                            <td>  <span id="message_calc_circulation_BEM2_CProtor" > 0 </span> </td>
-                            <td>  <span id="message_calc_circulation_LiftLine2_CProtor" > 0 </span> </td>
-                          </tr>
-                        </table>
-
-                      </div>
-
-                      <div  style="width: 100%; float:left ">
-                        <p>  Note: $F_{axial}$ and $F_{azim}$ are non-dimensioned by $\frac{1}{2} \rho U_\infty^2 R$  </p>
-                        <p class="bottomcall">
-                          Press bottom arrow to see other examples.
-                        </p>
+                            <section> <h2>Matrix formulation of velocity components induced at $N$ controlpoint by $N$ horseshoe vortex rings</h2>
+                              <p style ='text-align: left'>
+                                \[\left[ {\begin{array}{*{20}{c}}
+                                u_1\\
+                                \vdots \\
+                                u_N
+                                \end{array}} \right] = \left[ {\begin{array}{*{20}{c}}
+                                {u}_{1-1|_{\Gamma=1}} & \ldots & {u}_{1-N|_{\Gamma=1}}\\
+                                \vdots & \ddots & \vdots \\
+                                {u}_{N-1|_{\Gamma=1}} & \ldots & {u}_{N-N|_{\Gamma=1}}
+                                \end{array}} \right] \cdot \left[ {\begin{array}{*{20}{c}}
+                                \Gamma_1 \\
+                                 \vdots \\
+                                \Gamma_N
+                                \end{array}} \right]\]
 
 
-                      </div>
+                                \[\left[ {\begin{array}{*{20}{c}}
+                                v_1\\
+                                \vdots \\
+                                v_N
+                                \end{array}} \right] = \left[ {\begin{array}{*{20}{c}}
+                                {v}_{1-1|_{\Gamma=1}} & \ldots & {v}_{1-N|_{\Gamma=1}}\\
+                                \vdots & \ddots & \vdots \\
+                                {v}_{N-1|_{\Gamma=1}} & \ldots & {v}_{N-N|_{\Gamma=1}}
+                                \end{array}} \right] \cdot \left[ {\begin{array}{*{20}{c}}
+                                \Gamma_1 \\
+                                 \vdots \\
+                                \Gamma_N
+                                \end{array}} \right]\]
 
-                      <script>
-                      function solveplotCirculation2(val) {
-                        var TSR = 4+val/100*4;
-                        document.getElementById("message_calculate_circulation_BEM2").innerHTML = "Tip speed ratio = " +TSR.toFixed(2);
-                        var solution = solvepBEMLiftingLine(TSR,12,50);
-                        var adim = 0.5*50;
-
-
-                        plotFourlines(solution.BEM.r_R, nondim(solution.BEM.Fnorm, adim),  'BEM Faxial' , solution.BEM.r_R, nondim(solution.LiftLine.Fnorm, adim),  'LiftLine Faxial' ,
-                        solution.BEM.r_R, nondim(solution.BEM.Ftan, adim),  'BEM Fazim' , solution.BEM.r_R, nondim(solution.LiftLine.Ftan, adim),  'LiftLine Fazim' ,
-                        'chart_calculate_circulation_Lift_BEM2',[0,1,.1,0,1.4,0.2])
-                        document.getElementById("message_calc_circulation_BEM2_CTrotor").innerHTML =  solution.BEMloads.CTrotor.toFixed(2);
-                        document.getElementById("message_calc_circulation_BEM2_CProtor").innerHTML =  solution.BEMloads.CProtor.toFixed(2);
-                        document.getElementById("message_calc_circulation_LiftLine2_CTrotor").innerHTML =  solution.LiftLineloads.CTrotor.toFixed(2);
-                        document.getElementById("message_calc_circulation_LiftLine2_CProtor").innerHTML =  solution.LiftLineloads.CProtor.toFixed(2);
-                      }
-                      solveplotCirculation2(50)
-                      </script>
-
-                    </section>
-
-
-                    <section>
-
-                      <h2>Example of Lifiting Line solution of $a$ and $a'$, and comparison with BEM solution. </h2>
-                      <div  style="width: 100%; float:left "; >
-                        <p style ='text-align: center'>  Scroll the button below to change tip speed ratio. <span id="message_calculate_circulation_BEM3"> Tip speed ratio = 6. </span> </p>
-                        <input type="range" onchange="solveplotCirculation3(this.value)">
-
-                      </div>
-                      <div id="chart_calculate_circulation_Lift_BEM3" style="width: 600px; height: 400px; float: left"; ><!-- Plotly chart will be drawn inside this DIV --></div>
-                      <div  style="width: 300px; height:400px;  float: left"; >
-                        <p>Rotor performance:</p>
-                        <table>
-                          <tr>
-                            <th> </th>
-                            <th>BEM</th>
-                            <th>Lifting Line</th>
-                          </tr>
-                          <tr>
-                            <td>$C_T$</td>
-                            <td>  <span id="message_calc_circulation_BEM3_CTrotor" > 0 </span> </td>
-                            <td>  <span id="message_calc_circulation_LiftLine3_CTrotor" > 0 </span> </td>
-                          </tr>
-                          <tr>
-                            <td>$C_P$</td>
-                            <td>  <span id="message_calc_circulation_BEM3_CProtor" > 0 </span> </td>
-                            <td>  <span id="message_calc_circulation_LiftLine3_CProtor" > 0 </span> </td>
-                          </tr>
-                        </table>
-
-                      </div>
-
-                      <script>
-                      function solveplotCirculation3(val) {
-                        var TSR = 4+val/100*4;
-                        document.getElementById("message_calculate_circulation_BEM3").innerHTML = "Tip speed ratio = " +TSR.toFixed(2);
-                        var solution = solvepBEMLiftingLine(TSR,12,50);
-                        var adim = 1;
+                                \[\left[ {\begin{array}{*{20}{c}}
+                                w_1\\
+                                \vdots \\
+                                w_N
+                                \end{array}} \right] = \left[ {\begin{array}{*{20}{c}}
+                                {w}_{1-1|_{\Gamma=1}} & \ldots & {w}_{1-N|_{\Gamma=1}}\\
+                                \vdots & \ddots & \vdots \\
+                                {w}_{N-1|_{\Gamma=1}} & \ldots & {w}_{N-N|_{\Gamma=1}}
+                                \end{array}} \right] \cdot \left[ {\begin{array}{*{20}{c}}
+                                \Gamma_1 \\
+                                 \vdots \\
+                                \Gamma_N
+                                \end{array}} \right]\]
 
 
-                        plotFourlines(solution.BEM.r_R, nondim(solution.BEM.a, adim),  'BEM a' , solution.BEM.r_R, nondim(solution.LiftLine.a, adim),  'LiftLine a' ,
-                        solution.BEM.r_R, nondim(solution.BEM.aline, adim),  "BEM a'" , solution.BEM.r_R, nondim(solution.LiftLine.aline, adim),  "LiftLine a'" ,
-                        'chart_calculate_circulation_Lift_BEM3', [0,1,.1,0,0.7,0.1])
-                        document.getElementById("message_calc_circulation_BEM3_CTrotor").innerHTML =  solution.BEMloads.CTrotor.toFixed(2);
-                        document.getElementById("message_calc_circulation_BEM3_CProtor").innerHTML =  solution.BEMloads.CProtor.toFixed(2);
-                        document.getElementById("message_calc_circulation_LiftLine3_CTrotor").innerHTML =  solution.LiftLineloads.CTrotor.toFixed(2);
-                        document.getElementById("message_calc_circulation_LiftLine3_CProtor").innerHTML =  solution.LiftLineloads.CProtor.toFixed(2);
-                      }
-                      solveplotCirculation3(50)
-                      </script>
 
-                    </section>
-                  </section>
+                              </p>
 
-                  <section>
-
-                    <section> <h2>Effect of discretization of the vorticity system</h2>
-                      <p>While defining and placing the geometry of the vorticy system, the distribution of the vorticity system is defined by:</p>
-                      <ul>
-                        <li>The number and distribution of blade sections.</li>
-                        <li>The lenght and discretization of the wake.</li>
-                        <li>The assumed velocity of convection of the wake.</li>
-
-                      </ul>
-                      <div  style="width: 100%; float:left ">
-                        <p class="bottomcall">
-                          Press bottom arrow to see examples of the effect of discretization.
-                        </p>
-                      </div>
-
-                    </section>
+                            </section>
 
 
-                    <section> <h2>Effect of the number of blade sections.</h2>
-                      <div  style="width: 100%; float:left "; >
-                        <p style ='text-align: center'>  Scroll the button below to change number of spanwise elements. <span id="message_discrete_1"> N = 16. </span> </p>
-                        <input type="range" onchange="solveplotCirculationDiscrete(this.value)">
+                          </section>
 
-                      </div>
-                      <div id="chart_discrete_1" style="width: 600px; height: 400px; float: left"; ><!-- Plotly chart will be drawn inside this DIV --></div>
 
-                      <div  style="width: 300px; height:400px;  float: left"; >
-                        <p>Rotor performance:</p>
-                        <table>
-                          <tr>
-                            <th> </th>
-                            <th>BEM</th>
-                            <th>Lifting Line</th>
-                          </tr>
-                          <tr>
-                            <td>$C_T$</td>
-                            <td>  <span id="message_discrete_1_BEM1_CTrotor" > 0 </span> </td>
-                            <td>  <span id="message_discrete_1_LiftLine1_CTrotor" > 0 </span> </td>
-                          </tr>
-                          <tr>
-                            <td>$C_P$</td>
-                            <td>  <span id="message_discrete_1_BEM1_CProtor" > 0 </span> </td>
-                            <td>  <span id="message_discrete_1_LiftLine1_CProtor" > 0 </span> </td>
-                          </tr>
-                        </table>
-                        <div id="plotmesheffectnumberblades">
+                          <section>
+                            <section> <h2>Calculate velocities, circulations and forces at the blade element</h2>
+
+                              <div style="width: 50%; float:left">
+                                <p align="left"> Velocity perceived at blade element: axial, tangential and total. </p>
+                                <ul>
+                                  <li>$ V_{axial} = U_\infty + u $</li>
+                                  <li>$ V_{tan} = \Omega r +
+                                    \left[ {\begin{array}{*{20}{c}}   U_\infty + u & v & w     \end{array}} \right]
+                                    \cdot \vec{n}_{azim}        $</li>
+                                  <li>$ V_{p}  = \sqrt{V_{axial}^2 + V_{tan}^2 }  $</li>
+                                </ul>
+                                <p align="left"> Cilrculation and forces at blade element (two dimensional): lift, drag, axial and azimuthal. </p>
+                                <ul>
+                                  <li>$ \Gamma = \frac{1}{2} c V_{p} C_{l{\left(\alpha\right)}} $</li>
+                                  <li>$ Lift = \frac{1}{2} c \rho V_{p}^2 C_{l{\left(\alpha\right)}} $</li>
+                                  <li>$ Drag = \frac{1}{2} c \rho V_{p}^2  C_{d{\left(\alpha\right)}} $</li>
+                                  <li>$ F_{azim} = Lift \sin{\Phi}- Drag \cos{\Phi}  $</li>
+                                  <li>$ F_{axial} = Lift \cos{\Phi} + Drag \sin{\Phi}  $</li>
+                                </ul>
+                              </div>
+
+                              <div style="width: 50%; float:left">
+                                <img src="images/bladeelement.svg" >
+                              </div>
+
+                              <div style="width: 100%; float:left">
+                                <p align="left"> Note that all forces are in 2D, and have dimensions $N/m$. </p>
+                                <p align="left"> $C_l$ and $C_d$ can be retrieved from airfoil polar data, as a function of angle of attack $\alpha$. </p>
+                                <p class="bottomcall">
+                                  Press bottom arrow to see an example of an airfoil polar.
+                                </p>
+
+                              </div>
+
+
+                            </section>
+                            <section><h2> Example of airfoil polar, with lift and drag coefficient as a function of angle of attack $C_{l{\left(\alpha\right)}}$ and $C_{d{\left(\alpha\right)}}$</h2>
+
+                              <div id="polarcl_alpha_cd_alpha" style="width: 450px; float:left">  </div>
+                              <script> plot_cl_alpha_cd("polarcl_alpha_cd_alpha") </script>
+
+
+
+
+                              <div id="polarcl_cd" style="width: 450px; float:left">     </div>
+                              <script> plot_cl_cd("polarcl_cd") </script>
+
+
+                            </section>
+
+
+
+                          </section>
+
+
+
+                          <section> <h2>Example of lifting line code implementation - solution of the matrix system</h2>
+                            <div align="center" >
+                              <pre>
+                                <code class="javascript">
+
+    function solve_lifting_line_system_matrix_approach(rotor_wake_system,wind, Omega, rotorradius) {
+      // this codes solves a lifting line model of a horizontal axis rotor
+      // as inputs, it takes
+      //      rotor_wake_system: data strucure that contains the geometry of the horseshoe vortex rings,
+      //                         and the control points at the blade
+      //      wind: unperturbed wind velocity, also known as U_infinity
+      //      Omega: rotational velocity of the rotor
+      //      rotorradius: the radius of the rotor
+
+      // get controlpoints data structure
+      var controlpoints = rotor_wake_system.controlpoints;
+      // get horseshoe vortex rings data structure
+      var rings = rotor_wake_system.rings;
+      //
+      // initialize variables that we will use during the calculation
+      var velocity_induced =[]; // velocity induced by a horse vortex ring at a control point
+      var up = []; var vp = []; var wp = []; // components of the velocity induced by one horseshoe vortex ring
+      var u = 0;  var v = 0;  var w = 0; // total velocity induced at one control point
+      var radialposition; var azimdir; // radial position of the control point
+      var alpha; // angle of attack
+      var GammaNew=[]; // new estimate of bound circulation
+      var Gamma=[]; // current solution of bound circulation
+      for (var i = 0; i < controlpoints.length; i++) { GammaNew.push(0);}; // initialize as zeros
+      var vel1; var vmag; var vaxial; var vazim; var temploads; // velocities and loads at controlpoint
+      var MatrixU = new Array(); // matrix of induction, for velocity component in x-direction
+      var MatrixV = new Array(); // matrix of induction, for velocity component in y-direction
+      var MatrixW = new Array(); // matrix of induction, for velocity component in z-direction
+      // output variables
+      var a_temp = new Array(); // output vector for axial induction
+      var aline_temp = new Array();  // output vector for azimuthal induction
+      var r_R_temp = new Array();  // output vector for radial position
+      var Fnorm_temp = new Array();  // output vector for axial force
+      var Ftan_temp = new Array();  // output vector for tangential force
+      var Gamma_temp = new Array();  // output vector for circulation
+
+      // the variables below are to setup the maximum number of iterations and convergence criteria
+      var Niterations =1200;
+      var errorlimit = 0.01;
+      var error = 1.0; var refererror;
+      var ConvWeight =0.3;
+
+      // initalize and calculate matrices for velocity induced by horseshoe vortex rings
+      // two "for cicles", each line varying wind controlpoint "icp", each column varying with
+      // horseshoe vortex ring "jring"
+      for (var icp= 0; icp < controlpoints.length; icp++) {
+        MatrixU[icp] = new Array(); // new line of matrix
+        MatrixV[icp] = new Array(); // new line of matrix
+        MatrixW[icp] = new Array(); // new line of matrix
+        for (var jring = 0; jring < rings.length; jring++) {
+          // set ring strenth to unity, to calculate velocity induced by horseshoe vortex ring "jring"
+          // at controlpoint "icp"
+          rings[jring] = update_Gamma_sinle_ring(rings[jring],1,1);
+          velocity_induced = velocity_induced_single_ring(rings[jring], controlpoints[icp].coordinates);
+          // add compnent of velocity per unit strenght of circulation to induction matrix
+          MatrixU[icp][jring] = velocity_induced[0];
+          MatrixV[icp][jring] = velocity_induced[1];
+          MatrixW[icp][jring] = velocity_induced[2];
+        };
+      };
+
+      // calculate solution through an iteratuve process
+      for (var  kiter = 0; kiter < Niterations; kiter++) {
+
+        for (var ig = 0; ig < GammaNew.length; ig++) {
+          Gamma[ig] = GammaNew[ig]; //update current bound circulation with new estimate
+        }
+
+        // calculate velocity, circulation and loads at the controlpoints
+        for (var icp= 0; icp < controlpoints.length; icp++) {
+          // determine radial position of the controlpoint;
+          radialposition = Math.sqrt(math.dot(controlpoints[icp].coordinates, controlpoints[icp].coordinates));
+          u=0; v=0; w=0; // initialize velocity
+          // multiply icp line of Matrix with vector of circulation Gamma to calculate velocity at controlpoint
+          for (var jring = 0; jring < rings.length; jring++) {
+            u = u + MatrixU[icp][jring]*Gamma[jring]; // axial component of velocity
+            v= v + MatrixV[icp][jring]*Gamma[jring]; // y-component of velocity
+            w= w + MatrixW[icp][jring]*Gamma[jring]; // z-component of velocity
+          };
+          // calculate total perceived velocity
+          vrot = math.cross([-Omega, 0 , 0]  , controlpoints[icp].coordinates ); // rotational velocity
+          vel1 = [wind[0]+ u + vrot[0], wind[1]+ v + vrot[1] , wind[2]+ w + vrot[2]]; // total perceived velocity at section
+          // calculate azimuthal and axial velocity
+          azimdir = math.cross([-1/radialposition, 0 , 0]  , controlpoints[icp].coordinates ); // rotational direction
+          vazim = math.dot(azimdir , vel1); // azimuthal direction
+          vaxial =  math.dot([1, 0, 0] , vel1); // axial velocity
+          // calculate loads using blade element theory
+          temploads = loadBladeElement(vaxial, vazim, radialposition/rotorradius);
+          // new point of new estimate of circulation for the blade section
+          GammaNew[icp] = temploads[2];
+          // update output vector
+          a_temp[icp] =(-(u + vrot[0])/wind[0]);
+          aline_temp[icp] =(vazim/(radialposition*Omega)-1);
+          r_R_temp[icp] =(radialposition/rotorradius);
+          Fnorm_temp[icp] =(temploads[0]);
+          Ftan_temp[icp] =(temploads[1]);
+          Gamma_temp[icp] =(temploads[2]);
+        }; // end loop control points
+
+        // check convergence of solution
+        refererror =math.max(math.abs(GammaNew));
+        refererror =Math.max(refererror,0.001); // define scale of bound circulation
+        error =math.max(math.abs(math.subtract(GammaNew, Gamma))); // difference betweeen iterations
+        error= error/refererror; // relative error
+        if (error < errorlimit) {
+          // if error smaller than limit, stop iteration cycle
+          kiter=Niterations;
+        }
+
+        // set new estimate of bound circulation
+        for (var ig = 0; ig < GammaNew.length; ig++) {
+          GammaNew[ig] = (1-ConvWeight)*Gamma[ig] + ConvWeight*GammaNew[ig];
+        }
+      }; // end iteration loop
+
+      // output results of converged solution
+      return({a: a_temp , aline: aline_temp, r_R: r_R_temp, Fnorm: Fnorm_temp, Ftan: Ftan_temp , Gamma: Gamma_temp});
+    };
+
+
+
+                                </code>
+                              </pre>
+                            </div>
+                          </section>
+
+
+
+
+                          <section>
+
+
+                            <section>
+
+                              <h2>Example of Lifiting Line solution of bound circulation and comparison with BEM solution. </h2>
+                              <div  style="width: 100%; float:left "; >
+                                <p style ='text-align: center'>  Scroll the button below to change tip speed ratio. <span id="message_calculate_circulation_BEM1"> Tip speed ratio = 6. </span> </p>
+                                <input type="range" onchange="solveplotCirculation(this.value)">
+
+                              </div>
+                              <div id="chart_calculate_circulation_Lift_BEM1" style="width: 600px; height: 400px; float: left"; ><!-- Plotly chart will be drawn inside this DIV --></div>
+
+                              <div  style="width: 300px; height:400px;  float: left"; >
+                                <p>Rotor performance:</p>
+                                <table>
+                                  <tr>
+                                    <th> </th>
+                                    <th>BEM</th>
+                                    <th>Lifting Line</th>
+                                  </tr>
+                                  <tr>
+                                    <td>$C_T$</td>
+                                    <td>  <span id="message_calc_circulation_BEM1_CTrotor" > 0 </span> </td>
+                                    <td>  <span id="message_calc_circulation_LiftLine1_CTrotor" > 0 </span> </td>
+                                  </tr>
+                                  <tr>
+                                    <td>$C_P$</td>
+                                    <td>  <span id="message_calc_circulation_BEM1_CProtor" > 0 </span> </td>
+                                    <td>  <span id="message_calc_circulation_LiftLine1_CProtor" > 0 </span> </td>
+                                  </tr>
+                                </table>
+
+                              </div>
+
+                              <div  style="width: 100%; float:left ">
+                                <p>  Note: The circulation $\Gamma$ is non-dimensioned by $\frac{ U_\infty^2 }{N_{Blades} \pi \Omega}$  </p>
+                                <p class="bottomcall">
+                                  Press bottom arrow to see other examples.
+                                </p>
+                              </div>
+
+
+
+                              <script>
+
+                              function solveplotCirculation(val) {
+                                var TSR = 4+val/100*4;
+                                document.getElementById("message_calculate_circulation_BEM1").innerHTML = "Tip speed ratio = " +TSR.toFixed(2);
+                                var solution = solvepBEMLiftingLine(TSR,12,50);
+                                var adim = Math.PI/(3*TSR/50);
+
+
+                                plotGamma2(solution.BEM.r_R, nondim(solution.BEM.Gamma, adim),  'BEM' , solution.BEM.r_R, nondim(solution.LiftLine.Gamma, adim),  'LiftLine' , 'chart_calculate_circulation_Lift_BEM1')
+                                document.getElementById("message_calc_circulation_BEM1_CTrotor").innerHTML =  solution.BEMloads.CTrotor.toFixed(2);
+                                document.getElementById("message_calc_circulation_BEM1_CProtor").innerHTML =  solution.BEMloads.CProtor.toFixed(2);
+                                document.getElementById("message_calc_circulation_LiftLine1_CTrotor").innerHTML =  solution.LiftLineloads.CTrotor.toFixed(2);
+                                document.getElementById("message_calc_circulation_LiftLine1_CProtor").innerHTML =  solution.LiftLineloads.CProtor.toFixed(2);
+                              }
+                              solveplotCirculation(50)
+                              </script>
+
+                            </section>
+
+
+                            <section>
+
+                              <h2>Example of Lifiting Line solution of $F_{axial}$ and $F_{azim}$, and comparison with BEM solution. </h2>
+                              <div  style="width: 100%; float:left "; >
+                                <p style ='text-align: center'>  Scroll the button below to change tip speed ratio. <span id="message_calculate_circulation_BEM2"> Tip speed ratio = 6. </span> </p>
+                                <input type="range" onchange="solveplotCirculation2(this.value)">
+
+                              </div>
+                              <div id="chart_calculate_circulation_Lift_BEM2" style="width: 600px; height: 400px; float: left"; ><!-- Plotly chart will be drawn inside this DIV --></div>
+
+                              <div  style="width: 300px; height:400px;  float: left"; >
+                                <p>Rotor performance:</p>
+                                <table>
+                                  <tr>
+                                    <th> </th>
+                                    <th>BEM</th>
+                                    <th>Lifting Line</th>
+                                  </tr>
+                                  <tr>
+                                    <td>$C_T$</td>
+                                    <td>  <span id="message_calc_circulation_BEM2_CTrotor" > 0 </span> </td>
+                                    <td>  <span id="message_calc_circulation_LiftLine2_CTrotor" > 0 </span> </td>
+                                  </tr>
+                                  <tr>
+                                    <td>$C_P$</td>
+                                    <td>  <span id="message_calc_circulation_BEM2_CProtor" > 0 </span> </td>
+                                    <td>  <span id="message_calc_circulation_LiftLine2_CProtor" > 0 </span> </td>
+                                  </tr>
+                                </table>
+
+                              </div>
+
+                              <div  style="width: 100%; float:left ">
+                                <p>  Note: $F_{axial}$ and $F_{azim}$ are non-dimensioned by $\frac{1}{2} \rho U_\infty^2 R$  </p>
+                                <p class="bottomcall">
+                                  Press bottom arrow to see other examples.
+                                </p>
+
+
+                              </div>
+
+                              <script>
+                              function solveplotCirculation2(val) {
+                                var TSR = 4+val/100*4;
+                                document.getElementById("message_calculate_circulation_BEM2").innerHTML = "Tip speed ratio = " +TSR.toFixed(2);
+                                var solution = solvepBEMLiftingLine(TSR,12,50);
+                                var adim = 0.5*50;
+
+
+                                plotFourlines(solution.BEM.r_R, nondim(solution.BEM.Fnorm, adim),  'BEM Faxial' , solution.BEM.r_R, nondim(solution.LiftLine.Fnorm, adim),  'LiftLine Faxial' ,
+                                solution.BEM.r_R, nondim(solution.BEM.Ftan, adim),  'BEM Fazim' , solution.BEM.r_R, nondim(solution.LiftLine.Ftan, adim),  'LiftLine Fazim' ,
+                                'chart_calculate_circulation_Lift_BEM2',[0,1,.1,0,1.4,0.2])
+                                document.getElementById("message_calc_circulation_BEM2_CTrotor").innerHTML =  solution.BEMloads.CTrotor.toFixed(2);
+                                document.getElementById("message_calc_circulation_BEM2_CProtor").innerHTML =  solution.BEMloads.CProtor.toFixed(2);
+                                document.getElementById("message_calc_circulation_LiftLine2_CTrotor").innerHTML =  solution.LiftLineloads.CTrotor.toFixed(2);
+                                document.getElementById("message_calc_circulation_LiftLine2_CProtor").innerHTML =  solution.LiftLineloads.CProtor.toFixed(2);
+                              }
+                              solveplotCirculation2(50)
+                              </script>
+
+                            </section>
+
+
+                            <section>
+
+                              <h2>Example of Lifiting Line solution of $a$ and $a'$, and comparison with BEM solution. </h2>
+                              <div  style="width: 100%; float:left "; >
+                                <p style ='text-align: center'>  Scroll the button below to change tip speed ratio. <span id="message_calculate_circulation_BEM3"> Tip speed ratio = 6. </span> </p>
+                                <input type="range" onchange="solveplotCirculation3(this.value)">
+
+                              </div>
+                              <div id="chart_calculate_circulation_Lift_BEM3" style="width: 600px; height: 400px; float: left"; ><!-- Plotly chart will be drawn inside this DIV --></div>
+                              <div  style="width: 300px; height:400px;  float: left"; >
+                                <p>Rotor performance:</p>
+                                <table>
+                                  <tr>
+                                    <th> </th>
+                                    <th>BEM</th>
+                                    <th>Lifting Line</th>
+                                  </tr>
+                                  <tr>
+                                    <td>$C_T$</td>
+                                    <td>  <span id="message_calc_circulation_BEM3_CTrotor" > 0 </span> </td>
+                                    <td>  <span id="message_calc_circulation_LiftLine3_CTrotor" > 0 </span> </td>
+                                  </tr>
+                                  <tr>
+                                    <td>$C_P$</td>
+                                    <td>  <span id="message_calc_circulation_BEM3_CProtor" > 0 </span> </td>
+                                    <td>  <span id="message_calc_circulation_LiftLine3_CProtor" > 0 </span> </td>
+                                  </tr>
+                                </table>
+
+                              </div>
+
+                              <script>
+                              function solveplotCirculation3(val) {
+                                var TSR = 4+val/100*4;
+                                document.getElementById("message_calculate_circulation_BEM3").innerHTML = "Tip speed ratio = " +TSR.toFixed(2);
+                                var solution = solvepBEMLiftingLine(TSR,12,50);
+                                var adim = 1;
+
+
+                                plotFourlines(solution.BEM.r_R, nondim(solution.BEM.a, adim),  'BEM a' , solution.BEM.r_R, nondim(solution.LiftLine.a, adim),  'LiftLine a' ,
+                                solution.BEM.r_R, nondim(solution.BEM.aline, adim),  "BEM a'" , solution.BEM.r_R, nondim(solution.LiftLine.aline, adim),  "LiftLine a'" ,
+                                'chart_calculate_circulation_Lift_BEM3', [0,1,.1,0,0.7,0.1])
+                                document.getElementById("message_calc_circulation_BEM3_CTrotor").innerHTML =  solution.BEMloads.CTrotor.toFixed(2);
+                                document.getElementById("message_calc_circulation_BEM3_CProtor").innerHTML =  solution.BEMloads.CProtor.toFixed(2);
+                                document.getElementById("message_calc_circulation_LiftLine3_CTrotor").innerHTML =  solution.LiftLineloads.CTrotor.toFixed(2);
+                                document.getElementById("message_calc_circulation_LiftLine3_CProtor").innerHTML =  solution.LiftLineloads.CProtor.toFixed(2);
+                              }
+                              solveplotCirculation3(50)
+                              </script>
+
+                            </section>
+                          </section>
+
+                          <section>
+
+                            <section> <h2>Effect of discretization of the vorticity system</h2>
+                              <p>While defining and placing the geometry of the vorticy system, the distribution of the vorticity system is defined by:</p>
+                              <ul>
+                                <li>The number and distribution of blade sections.</li>
+                                <li>The lenght and discretization of the wake.</li>
+                                <li>The assumed velocity of convection of the wake.</li>
+
+                              </ul>
+                              <div  style="width: 100%; float:left ">
+                                <p class="bottomcall">
+                                  Press bottom arrow to see examples of the effect of discretization.
+                                </p>
+                              </div>
+
+                            </section>
+
+
+                            <section> <h2>Effect of the number of blade sections.</h2>
+                              <div  style="width: 100%; float:left "; >
+                                <p style ='text-align: center'>  Scroll the button below to change number of spanwise elements. <span id="message_discrete_1"> N = 16. </span> </p>
+                                <input type="range" onchange="solveplotCirculationDiscrete(this.value)">
+
+                              </div>
+                              <div id="chart_discrete_1" style="width: 600px; height: 400px; float: left"; ><!-- Plotly chart will be drawn inside this DIV --></div>
+
+                              <div  style="width: 300px; height:400px;  float: left"; >
+                                <p>Rotor performance:</p>
+                                <table>
+                                  <tr>
+                                    <th> </th>
+                                    <th>BEM</th>
+                                    <th>Lifting Line</th>
+                                  </tr>
+                                  <tr>
+                                    <td>$C_T$</td>
+                                    <td>  <span id="message_discrete_1_BEM1_CTrotor" > 0 </span> </td>
+                                    <td>  <span id="message_discrete_1_LiftLine1_CTrotor" > 0 </span> </td>
+                                  </tr>
+                                  <tr>
+                                    <td>$C_P$</td>
+                                    <td>  <span id="message_discrete_1_BEM1_CProtor" > 0 </span> </td>
+                                    <td>  <span id="message_discrete_1_LiftLine1_CProtor" > 0 </span> </td>
+                                  </tr>
+                                </table>
+                                <div id="plotmesheffectnumberblades">
+                                </div>
+
+                              </div>
+
+                              <div  style="width: 100%; float:left ">
+                                <p>  Note: The circulation $\Gamma$ is non-dimensioned by $\frac{ U_\infty^2 }{N_{Blades} \pi \Omega}$. Solution at tip speed ratio = 6.  </p>
+                                <p class="bottomcall">
+                                  Press bottom arrow to see other examples.
+                                </p>
+                              </div>
+
+
+
+                              <script>
+                              var sceneeffectnumberblades, cameraeffectnumberblades, renderereffectnumberblades;
+                              var tempout=  maketestplot(400, 250, 'plotmesheffectnumberblades', sceneeffectnumberblades, renderereffectnumberblades, cameraeffectnumberblades);
+                              sceneeffectnumberblades=tempout[0];
+                              renderereffectnumberblades=tempout[2];
+                              cameraeffectnumberblades=tempout[1];
+                              renderereffectnumberblades.render( sceneeffectnumberblades, cameraeffectnumberblades );
+
+
+                              function solveplotCirculationDiscrete(val) {
+                                var TSR = 6;
+                                var Nelements = Math.round(val/100*20)+6;
+                                document.getElementById("message_discrete_1").innerHTML = "N = " +Nelements;
+                                var solution = solvepBEMLiftingLine(TSR,Nelements,50);
+                                var adim = Math.PI/(3*TSR/50);
+                                sceneeffectnumberblades=addscene(solution.rotor_wake_system, sceneeffectnumberblades);
+                                renderereffectnumberblades.render( sceneeffectnumberblades, cameraeffectnumberblades );
+
+
+                                plotGamma2(solution.BEM.r_R, nondim(solution.BEM.Gamma, adim),  'BEM' , solution.BEM.r_R, nondim(solution.LiftLine.Gamma, adim),  'LiftLine' , 'chart_discrete_1')
+                                document.getElementById("message_discrete_1_BEM1_CTrotor").innerHTML =  solution.BEMloads.CTrotor.toFixed(2);
+                                document.getElementById("message_discrete_1_BEM1_CProtor").innerHTML =  solution.BEMloads.CProtor.toFixed(2);
+                                document.getElementById("message_discrete_1_LiftLine1_CTrotor").innerHTML =  solution.LiftLineloads.CTrotor.toFixed(2);
+                                document.getElementById("message_discrete_1_LiftLine1_CProtor").innerHTML =  solution.LiftLineloads.CProtor.toFixed(2);
+                              }
+                              solveplotCirculationDiscrete(50)
+                              </script>
+
+                            </section>
+
+                            <section> <h2>Effect of length of the wake.</h2>
+                              <div  style="width: 100%; float:left "; >
+                                <p style ='text-align: center'>  Scroll the button below to vary the lenght of the wake $Lw$ in diameters D downstream. <span id="message_discrete2_1"> D = 10. </span> </p>
+                                <input type="range" onchange="solveplotCirculationDiscrete2(this.value)">
+
+                              </div>
+                              <div id="chart_discrete2_1" style="width: 600px; height: 400px; float: left"; ><!-- Plotly chart will be drawn inside this DIV --></div>
+
+                              <div  style="width: 300px; height:400px;  float: left"; >
+                                <p>Rotor performance:</p>
+                                <table>
+                                  <tr>
+                                    <th> </th>
+                                    <th>BEM</th>
+                                    <th>Lifting Line</th>
+                                  </tr>
+                                  <tr>
+                                    <td>$C_T$</td>
+                                    <td>  <span id="message_discrete2_1_BEM1_CTrotor" > 0 </span> </td>
+                                    <td>  <span id="message_discrete2_1_LiftLine1_CTrotor" > 0 </span> </td>
+                                  </tr>
+                                  <tr>
+                                    <td>$C_P$</td>
+                                    <td>  <span id="message_discrete2_1_BEM1_CProtor" > 0 </span> </td>
+                                    <td>  <span id="message_discrete2_1_LiftLine1_CProtor" > 0 </span> </td>
+                                  </tr>
+                                </table>
+
+                                <div id="plotmesheffectnumberrotations">
+                                </div>
+
+
+                              </div>
+
+                              <div  style="width: 100%; float:left ">
+                                <!-- <p>  Note: The circulation $\Gamma$ is non-dimensioned by $\frac{ U_\infty^2 }{N_{Blades} \pi \Omega}$. Solution at tip speed ratio = 6.  </p> -->
+                                <!-- <p class="bottomcall"> -->
+                                <!-- Press bottom arrow to see other examples. -->
+                                <!-- </p> -->
+                              </div>
+
+
+
+                              <script>
+                              var sceneeffectnumberrotations, cameraeffectnumberrotations, renderereffectnumberrotations;
+                              var tempout=  maketestplot(400, 250, 'plotmesheffectnumberrotations', sceneeffectnumberrotations, renderereffectnumberrotations, cameraeffectnumberrotations);
+                              sceneeffectnumberrotations=tempout[0];
+                              renderereffectnumberrotations=tempout[2];
+                              cameraeffectnumberrotations=tempout[1];
+                              renderereffectnumberrotations.render( sceneeffectnumberrotations, cameraeffectnumberrotations );
+
+
+
+                              function solveplotCirculationDiscrete2(val) {
+                                var TSR = 6;
+                                var Nelements = 12;
+                                var Nrotations = Math.pow(val/50*1.2+0.1, 4) +0.2;
+                                var solution = solvepBEMLiftingLine(TSR,Nelements,Nrotations);
+                                sceneeffectnumberrotations=addscene(solution.rotor_wake_system, sceneeffectnumberrotations);
+                                renderereffectnumberrotations.render( sceneeffectnumberrotations, cameraeffectnumberrotations );
+
+                                // addscene(solution.rotor_wake_system, scene1)
+                                // find maximum wake length
+                                var maxlength=0;
+                                var rings=solution.rotor_wake_system.rings;
+                                var filaments = rings[0].filaments;
+                                var nelements =(filaments.length-1)/2;
+                                maxlength=filaments[nelements].x1
+                                maxlength = maxlength/(2*50);
+                                document.getElementById("message_discrete2_1").innerHTML = "Lw/D = " + maxlength.toFixed(2);
+                                var adim = 1;
+
+                                plotFourlines(solution.BEM.r_R, nondim(solution.BEM.a, adim),  'BEM a' , solution.BEM.r_R, nondim(solution.LiftLine.a, adim),  'LiftLine a' ,
+                                solution.BEM.r_R, nondim(solution.BEM.aline, adim),  "BEM a'" , solution.BEM.r_R, nondim(solution.LiftLine.aline, adim),  "LiftLine a'" ,
+                                'chart_discrete2_1', [0,1,.1,0,0.7,0.1])
+
+                                // plotGamma2(solution.BEM.r_R, nondim(solution.BEM.Gamma, adim),  'BEM' , solution.BEM.r_R, nondim(solution.LiftLine.Gamma, adim),  'LiftLine' , 'chart_discrete2_1')
+                                document.getElementById("message_discrete2_1_BEM1_CTrotor").innerHTML =  solution.BEMloads.CTrotor.toFixed(2);
+                                document.getElementById("message_discrete2_1_BEM1_CProtor").innerHTML =  solution.BEMloads.CProtor.toFixed(2);
+                                document.getElementById("message_discrete2_1_LiftLine1_CTrotor").innerHTML =  solution.LiftLineloads.CTrotor.toFixed(2);
+                                document.getElementById("message_discrete2_1_LiftLine1_CProtor").innerHTML =  solution.LiftLineloads.CProtor.toFixed(2);
+                              }
+                              solveplotCirculationDiscrete2(50)
+                              </script>
+
+                            </section>
+                          </section>
+
+                          <section> <h2>Suggestion: the example of the rectangular wing in straigth flight</h2>
+                            <div  style="width: 50%; float:left "; >
+                              <p>The model of a rotor is a difficult case to verify some of the key elements of your code. As a suggestion, you can first model a single wing in straight flight.
+                                In this section, we present the case of a rectangular straight wing, at a geometric angle of attack of $5^\circ$.
+                                The lift coefficient at each section is given by $C_l=2\pi \sin \alpha$. The effective angle of attack $\alpha$ is ploted below, over the span of the wing.</p>
+                                <p style ='text-align: center'>  Scroll the button below to vary the wing's aspect ratio $A_R = \frac{Wingspan}{chord}$= <span id="message_straightwing"> . </span> </p>
+                                <input type="range" onchange="solveplotstraightwing(this.value)">
+                                <p style ='text-align: center'>  Number of spanwise elements = <span id="message_straightwing_N"> . </span> </p>
+
+                              </div>
+                              <div  style="width: 50%; float:left "; >
+                                <!-- <p style ='text-align: center'>  Scroll the button below to vary the wing's aspect ratio $A_R = \frac{Wingspan}{chord}$= <span id="message_straightwing"> . </span> </p> -->
+                                <!-- <input type="range" onchange="solveplotstraightwing(this.value)"> -->
+                                <div id="chart_wing" style=" float: left"><!-- Plotly chart will be drawn inside this DIV --></div>
+                                <!-- <p style ='text-align: center'>  Number of spanwise elements = <span id="message_straightwing_N"> . </span> </p> -->
+
+                              </div>
+
+                            </section>
+
+                            <script>
+                            function solveplotstraightwing(val) {
+
+                              var AspectRatio = val/50*50+6;
+                              var Nelements = Math.round(AspectRatio/4)*2+1;
+                              var Alpha =5;
+                              var solution = solvewingLiftingLine(Nelements,AspectRatio,Alpha);
+
+                              document.getElementById("message_straightwing").innerHTML = AspectRatio.toFixed(1);
+                              document.getElementById("message_straightwing_N").innerHTML = Nelements;
+                              // console.log(solution.Cl);
+                              plotOneline(nondim(solution.span, AspectRatio), solution.Cl, "Cl","Span/(c*AR)", "chart_wing")
+                              // plotFourlines(solution.BEM.r_R, nondim(solution.BEM.a, adim),  'BEM a' , solution.BEM.r_R, nondim(solution.LiftLine.a, adim),  'LiftLine a' ,
+                              // solution.BEM.r_R, nondim(solution.BEM.aline, adim),  "BEM a'" , solution.BEM.r_R, nondim(solution.LiftLine.aline, adim),  "LiftLine a'" ,
+                              // 'chart_discrete2_1', [0,1,.1,0,0.7,0.1])
+
+
+                            }
+                            solveplotstraightwing(50)
+
+                            </script>
+
+
+
+
+
+
+                            <section> <h2> Review of tutorial</h2>
+
+                              <h3>Learning objectives</h3>
+                              <p align="left"> To be able to program a lifting line model for application to an horizontal axis wind turbine... </p>
+                              <ul>
+                                <li>... in steady, uniform, axial flow.</li>
+                                <li>... using a blade element approach.</li>
+                                <li>... with a frozen wake geometry.</li>
+                              </ul>
+                              <p>  </p>
+
+                              <h3>Suggestions</h3>
+                              <p align="left"> Use the simulation tools to compare  the two models and the terms of induction, loading, circulation, and tip speed ratio. </p>
+                              <p align="left"> Use the liftign line model to calculate the 3D flow field, including the velocity at the wake. </p>
+
+
+                            </section>
+
+                          </div>
                         </div>
 
-                      </div>
+                        <script src="lib/js/head.min.js"></script>
+                        <script src="js/reveal.js"></script>
 
-                      <div  style="width: 100%; float:left ">
-                        <p>  Note: The circulation $\Gamma$ is non-dimensioned by $\frac{ U_\infty^2 }{N_{Blades} \pi \Omega}$. Solution at tip speed ratio = 6.  </p>
-                        <p class="bottomcall">
-                          Press bottom arrow to see other examples.
-                        </p>
-                      </div>
+                        <script>
+                        Reveal.initialize({
+                          history: true,
 
+                          math: {
+                            // mathjax: 'https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML',
+                            // config: 'TeX-MML-AM_CHTML'
+                            // 'TeX-AMS_HTML-full'
+                            config: 'TeX-AMS_HTML-full'
+                          },
 
-
-                      <script>
-                      var sceneeffectnumberblades, cameraeffectnumberblades, renderereffectnumberblades;
-                      var tempout=  maketestplot(400, 250, 'plotmesheffectnumberblades', sceneeffectnumberblades, renderereffectnumberblades, cameraeffectnumberblades);
-                      sceneeffectnumberblades=tempout[0];
-                      renderereffectnumberblades=tempout[2];
-                      cameraeffectnumberblades=tempout[1];
-                      renderereffectnumberblades.render( sceneeffectnumberblades, cameraeffectnumberblades );
-
-
-                      function solveplotCirculationDiscrete(val) {
-                        var TSR = 6;
-                        var Nelements = Math.round(val/100*20)+6;
-                        document.getElementById("message_discrete_1").innerHTML = "N = " +Nelements;
-                        var solution = solvepBEMLiftingLine(TSR,Nelements,50);
-                        var adim = Math.PI/(3*TSR/50);
-                        sceneeffectnumberblades=addscene(solution.rotor_wake_system, sceneeffectnumberblades);
-                        renderereffectnumberblades.render( sceneeffectnumberblades, cameraeffectnumberblades );
-
-
-                        plotGamma2(solution.BEM.r_R, nondim(solution.BEM.Gamma, adim),  'BEM' , solution.BEM.r_R, nondim(solution.LiftLine.Gamma, adim),  'LiftLine' , 'chart_discrete_1')
-                        document.getElementById("message_discrete_1_BEM1_CTrotor").innerHTML =  solution.BEMloads.CTrotor.toFixed(2);
-                        document.getElementById("message_discrete_1_BEM1_CProtor").innerHTML =  solution.BEMloads.CProtor.toFixed(2);
-                        document.getElementById("message_discrete_1_LiftLine1_CTrotor").innerHTML =  solution.LiftLineloads.CTrotor.toFixed(2);
-                        document.getElementById("message_discrete_1_LiftLine1_CProtor").innerHTML =  solution.LiftLineloads.CProtor.toFixed(2);
-                      }
-                      solveplotCirculationDiscrete(50)
-                      </script>
-
-                    </section>
-
-                    <section> <h2>Effect of length of the wake.</h2>
-                      <div  style="width: 100%; float:left "; >
-                        <p style ='text-align: center'>  Scroll the button below to vary the lenght of the wake $Lw$ in diameters D downstream. <span id="message_discrete2_1"> D = 10. </span> </p>
-                        <input type="range" onchange="solveplotCirculationDiscrete2(this.value)">
-
-                      </div>
-                      <div id="chart_discrete2_1" style="width: 600px; height: 400px; float: left"; ><!-- Plotly chart will be drawn inside this DIV --></div>
-
-                      <div  style="width: 300px; height:400px;  float: left"; >
-                        <p>Rotor performance:</p>
-                        <table>
-                          <tr>
-                            <th> </th>
-                            <th>BEM</th>
-                            <th>Lifting Line</th>
-                          </tr>
-                          <tr>
-                            <td>$C_T$</td>
-                            <td>  <span id="message_discrete2_1_BEM1_CTrotor" > 0 </span> </td>
-                            <td>  <span id="message_discrete2_1_LiftLine1_CTrotor" > 0 </span> </td>
-                          </tr>
-                          <tr>
-                            <td>$C_P$</td>
-                            <td>  <span id="message_discrete2_1_BEM1_CProtor" > 0 </span> </td>
-                            <td>  <span id="message_discrete2_1_LiftLine1_CProtor" > 0 </span> </td>
-                          </tr>
-                        </table>
-
-                        <div id="plotmesheffectnumberrotations">
-                        </div>
+                          dependencies: [
+                            // { src: 'plugin/math/math.js', async: true }
+                            // ,
+                            {  src: 'plugin/math/math.js', async: true}
+                            // { src: '/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+                          ]
+                        });
+                        // console.log(scene1);
+                        render();
+                        // Shows the slide number using default formatting
+                        Reveal.configure({ slideNumber: true });
+                        // Slide number formatting can be configured using these variables:
+                        //  "h.v":  horizontal . vertical slide number (default)
+                        //  "h/v":  horizontal / vertical slide number
+                        //    "c":  flattened slide number
+                        //  "c/t":  flattened slide number / total slides
+                        Reveal.addEventListener( 'slidechanged', function( event ) {
+                          cancelAnimationFrame(pointerAnimationrequest);
+                          // cancelAnimationFrame(pointerAnimationrequest)+2;
+                          // cancelAnimationFrame(pointerAnimationrequest+1);
+                          var idslide=Reveal.getCurrentSlide().id;
+                          if (idslide=="Coverslide") {
+                            render(renderer1,scene1,camera1);
+                            // console.log(" id is  " + Reveal.getCurrentSlide().id);
+                          };
 
 
-                      </div>
+                        } );
+                        </script>
 
-                      <div  style="width: 100%; float:left ">
-                        <!-- <p>  Note: The circulation $\Gamma$ is non-dimensioned by $\frac{ U_\infty^2 }{N_{Blades} \pi \Omega}$. Solution at tip speed ratio = 6.  </p> -->
-                        <!-- <p class="bottomcall"> -->
-                        <!-- Press bottom arrow to see other examples. -->
-                        <!-- </p> -->
-                      </div>
-
-
-
-                      <script>
-                      var sceneeffectnumberrotations, cameraeffectnumberrotations, renderereffectnumberrotations;
-                      var tempout=  maketestplot(400, 250, 'plotmesheffectnumberrotations', sceneeffectnumberrotations, renderereffectnumberrotations, cameraeffectnumberrotations);
-                      sceneeffectnumberrotations=tempout[0];
-                      renderereffectnumberrotations=tempout[2];
-                      cameraeffectnumberrotations=tempout[1];
-                      renderereffectnumberrotations.render( sceneeffectnumberrotations, cameraeffectnumberrotations );
-
-
-
-                      function solveplotCirculationDiscrete2(val) {
-                        var TSR = 6;
-                        var Nelements = 12;
-                        var Nrotations = Math.pow(val/50*1.2+0.1, 4) +0.2;
-                        var solution = solvepBEMLiftingLine(TSR,Nelements,Nrotations);
-                        sceneeffectnumberrotations=addscene(solution.rotor_wake_system, sceneeffectnumberrotations);
-                        renderereffectnumberrotations.render( sceneeffectnumberrotations, cameraeffectnumberrotations );
-
-                        // addscene(solution.rotor_wake_system, scene1)
-                        // find maximum wake length
-                        var maxlength=0;
-                        var rings=solution.rotor_wake_system.rings;
-                        var filaments = rings[0].filaments;
-                        var nelements =(filaments.length-1)/2;
-                        maxlength=filaments[nelements].x1
-                        maxlength = maxlength/(2*50);
-                        document.getElementById("message_discrete2_1").innerHTML = "Lw/D = " + maxlength.toFixed(2);
-                        var adim = 1;
-
-                        plotFourlines(solution.BEM.r_R, nondim(solution.BEM.a, adim),  'BEM a' , solution.BEM.r_R, nondim(solution.LiftLine.a, adim),  'LiftLine a' ,
-                        solution.BEM.r_R, nondim(solution.BEM.aline, adim),  "BEM a'" , solution.BEM.r_R, nondim(solution.LiftLine.aline, adim),  "LiftLine a'" ,
-                        'chart_discrete2_1', [0,1,.1,0,0.7,0.1])
-
-                        // plotGamma2(solution.BEM.r_R, nondim(solution.BEM.Gamma, adim),  'BEM' , solution.BEM.r_R, nondim(solution.LiftLine.Gamma, adim),  'LiftLine' , 'chart_discrete2_1')
-                        document.getElementById("message_discrete2_1_BEM1_CTrotor").innerHTML =  solution.BEMloads.CTrotor.toFixed(2);
-                        document.getElementById("message_discrete2_1_BEM1_CProtor").innerHTML =  solution.BEMloads.CProtor.toFixed(2);
-                        document.getElementById("message_discrete2_1_LiftLine1_CTrotor").innerHTML =  solution.LiftLineloads.CTrotor.toFixed(2);
-                        document.getElementById("message_discrete2_1_LiftLine1_CProtor").innerHTML =  solution.LiftLineloads.CProtor.toFixed(2);
-                      }
-                      solveplotCirculationDiscrete2(50)
-                      </script>
-
-                    </section>
-                  </section>
-
-                  <section> <h2>Suggestion: the example of the rectangular wing in straigth flight</h2>
-                    <div  style="width: 50%; float:left "; >
-                      <p>The model of a rotor is a difficult case to verify some of the key elements of your code. As a suggestion, you can first model a single wing in straight flight.
-                        In this section, we present the case of a rectangular straight wing, at a geometric angle of attack of $5^\circ$.
-                        The lift coefficient at each section is given by $C_l=2\pi \sin \alpha$. The effective angle of attack $\alpha$ is ploted below, over the span of the wing.</p>
-                        <p style ='text-align: center'>  Scroll the button below to vary the wing's aspect ratio $A_R = \frac{Wingspan}{chord}$= <span id="message_straightwing"> . </span> </p>
-                        <input type="range" onchange="solveplotstraightwing(this.value)">
-                        <p style ='text-align: center'>  Number of spanwise elements = <span id="message_straightwing_N"> . </span> </p>
-
-                      </div>
-                      <div  style="width: 50%; float:left "; >
-                        <!-- <p style ='text-align: center'>  Scroll the button below to vary the wing's aspect ratio $A_R = \frac{Wingspan}{chord}$= <span id="message_straightwing"> . </span> </p> -->
-                        <!-- <input type="range" onchange="solveplotstraightwing(this.value)"> -->
-                        <div id="chart_wing" style=" float: left"><!-- Plotly chart will be drawn inside this DIV --></div>
-                        <!-- <p style ='text-align: center'>  Number of spanwise elements = <span id="message_straightwing_N"> . </span> </p> -->
-
-                      </div>
-
-                    </section>
-
-                    <script>
-                    function solveplotstraightwing(val) {
-
-                      var AspectRatio = val/50*50+6;
-                      var Nelements = Math.round(AspectRatio/4)*2+1;
-                      var Alpha =5;
-                      var solution = solvewingLiftingLine(Nelements,AspectRatio,Alpha);
-
-                      document.getElementById("message_straightwing").innerHTML = AspectRatio.toFixed(1);
-                      document.getElementById("message_straightwing_N").innerHTML = Nelements;
-                      // console.log(solution.Cl);
-                      plotOneline(nondim(solution.span, AspectRatio), solution.Cl, "Cl","Span/(c*AR)", "chart_wing")
-                      // plotFourlines(solution.BEM.r_R, nondim(solution.BEM.a, adim),  'BEM a' , solution.BEM.r_R, nondim(solution.LiftLine.a, adim),  'LiftLine a' ,
-                      // solution.BEM.r_R, nondim(solution.BEM.aline, adim),  "BEM a'" , solution.BEM.r_R, nondim(solution.LiftLine.aline, adim),  "LiftLine a'" ,
-                      // 'chart_discrete2_1', [0,1,.1,0,0.7,0.1])
-
-
-                    }
-                    solveplotstraightwing(50)
-
-                    </script>
-
-
-
-
-
-
-                    <section> <h2> Review of tutorial</h2>
-
-                      <h3>Learning objectives</h3>
-                      <p align="left"> To be able to program a lifting line model for application to an horizontal axis wind turbine... </p>
-                      <ul>
-                        <li>... in steady, uniform, axial flow.</li>
-                        <li>... using a blade element approach.</li>
-                        <li>... with a frozen wake geometry.</li>
-                      </ul>
-                      <p>  </p>
-
-                      <h3>Suggestions</h3>
-                      <p align="left"> Use the simulation tools to compare  the two models and the terms of induction, loading, circulation, and tip speed ratio. </p>
-                      <p align="left"> Use the liftign line model to calculate the 3D flow field, including the velocity at the wake. </p>
-
-
-                    </section>
-
-                  </div>
-                </div>
-
-                <script src="lib/js/head.min.js"></script>
-                <script src="js/reveal.js"></script>
-
-                <script>
-                Reveal.initialize({
-                  history: true,
-
-                  math: {
-                    // mathjax: 'https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML',
-                    // config: 'TeX-MML-AM_CHTML'
-                    // 'TeX-AMS_HTML-full'
-                    config: 'TeX-AMS_HTML-full'
-                  },
-
-                  dependencies: [
-                    // { src: 'plugin/math/math.js', async: true }
-                    // ,
-                    {  src: 'plugin/math/math.js', async: true}
-                    // { src: '/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
-                  ]
-                });
-                // console.log(scene1);
-                render();
-                // Shows the slide number using default formatting
-                Reveal.configure({ slideNumber: true });
-                // Slide number formatting can be configured using these variables:
-                //  "h.v":  horizontal . vertical slide number (default)
-                //  "h/v":  horizontal / vertical slide number
-                //    "c":  flattened slide number
-                //  "c/t":  flattened slide number / total slides
-                Reveal.addEventListener( 'slidechanged', function( event ) {
-                  cancelAnimationFrame(pointerAnimationrequest);
-                  // cancelAnimationFrame(pointerAnimationrequest)+2;
-                  // cancelAnimationFrame(pointerAnimationrequest+1);
-                  var idslide=Reveal.getCurrentSlide().id;
-                  if (idslide=="Coverslide") {
-                    render(renderer1,scene1,camera1);
-                    // console.log(" id is  " + Reveal.getCurrentSlide().id);
-                  };
-
-
-                } );
-                </script>
-
-              </body>
-              </html>
+                      </body>
+                      </html>
